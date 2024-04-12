@@ -1,0 +1,34 @@
+import Link from 'next/link';
+import Container from '../Container';
+import logo from '../../assets/images/Logo.png';
+import { Redressed } from 'next/font/google';
+
+const redressed = Redressed({ subsets: ['latin'], weight: ['400'] });
+
+const NavBar = () => {
+  return (
+    <div className="sticky top-0 w-full bg-slate-200 z-30 shadow-sm">
+      <div className="py-4 border-b-[1px]">
+        <Container>
+          <div className="flex sm:grid items-center justify-between gap-3 sm:grid-cols-4">
+            <Link
+              href="/"
+              className={`${redressed.className} font-bold flex sm:col-span-1`}
+            >
+              <img className="w-7" src={logo.src} alt="eshopLogo" />
+              fingerhut
+            </Link>
+
+            <div className="md:block sm:col-span-2">Search</div>
+            <div className="flex items-center gap-8 md:gap-12 sm:col-span-2 sm:gap-16">
+              <div>CartCount</div>
+              <div>UserMenu</div>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </div>
+  );
+};
+
+export default NavBar;
