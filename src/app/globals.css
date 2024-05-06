@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.main-image {
+  @apply flex md:flex-row justify-center align-middle self-stretch p-0 md:w-auto md:h-full;
+}
+
+.main-text {
+  @apply font-bold leading-10 text-gray-800 text-xl md:text-2xl mb-2;
+}

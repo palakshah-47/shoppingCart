@@ -16,7 +16,10 @@ const config: Config = {
       backgroundColor: {
         footer: '#D1E2EB',
       },
-      screens: { sm: { max: '340px' } },
+      screens: { sm: { max: '450px' } },
+      fontFamily: {
+        lato: 'Lato',
+      },
     },
   },
   plugins: [],
