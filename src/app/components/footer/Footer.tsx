@@ -19,7 +19,7 @@ const Footer = () => {
             <Link href="#">Man</Link>
             <Link href="#">Home & Furniture</Link>
             <Link href="#">Asseccories</Link>
-            <Link href="#">Electronics</Link>
+            <Link href="#">Phones & Electronics</Link>
             <Link href="#">Sports & Outdoor</Link>
             <Link href="#">Sale</Link>
           </FooterList>

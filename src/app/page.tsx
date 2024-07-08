@@ -1,38 +1,41 @@
-// import mainLeftImage from './assets/images/mainLeftImage.png';
-// import mainRightImage from './assets/images/mainRightImage.png';
-import Image from 'next/image';
+import Container from './components/Container';
+import { TopBanner } from './components/TopBanner';
+import { products } from '../../const/products';
+import { truncateText } from './utils';
+import ProductCard from './components/products/ProductCard';
 export default function Home() {
   return (
-    <div className="relative mx-auto px-4 pt-8 flex flex-col md:flex-row sm:flex-col sm:w-[360px]">
-      <div className="w-full relative aspect-video">
-        <Image
-          src="/mainLeftImage.png"
-          fill
-          alt="left banner"
-          className="main-image"
-        />
-      </div>
-
-      <div className="relative w-full flex flex-row justify-evenly">
-        <div className="w-full relative aspect-video">
-          <Image
-            src="/mainRightImage.png"
-            fill
-            alt="right banner"
-            className="main-image"
-          />
-        </div>
-        <div className="absolute top-1/4 sm:top-4 left-1/2 transform -translate-x-1/2 mb-8 md:mb-0 text-center flex flex-col whitespace-nowrap">
-          <h1 className="main-text">SMOCKS, ROBES & WRAPS</h1>
-          <p className=" text-gray-800 text-xl md:text-2xl mb-2">
-            Poolside glam included From $4.99
-          </p>
-          <p className="text-gray-800 text-xl mb-2">
-            Enjoy discount on Summer Essentials
-          </p>
-          <p className="font-bold text-yellow-400 text-xl mb-2">Get 30% OFF</p>
+    <Container>
+      <div>
+        <TopBanner />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+          {products.map((product: any, index) => (
+            <ProductCard key={`${index}-${product.name}`} data={product} />
+          ))}
         </div>
       </div>
-    </div>
+    </Container>
   );
 }
+/* summer essentials */
+
+/* Auto layout */
+/*display: flex;
+flex-direction: column;
+justify-content: space-between;
+align-items: center;
+padding: 0px;
+
+position: absolute;
+width: 228px;
+height: 163px;
+left: 433px;
+top: 149px;
+
+
+/* Inside auto layout */
+/*flex: none;
+order: 2;
+flex-grow: 0;
+z-index: 2;
+*/
