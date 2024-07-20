@@ -2,7 +2,7 @@ import Image from 'next/image';
 export const TopBanner = () => {
   return (
     <div className="relative mx-auto py-8 flex flex-col md:flex-row sm:flex-col sm:w-[360px]">
-      <div className="w-full aspect-video max-w-[718px] relative md:max-w-[547px]">
+      <div className="w-full aspect-video max-w-[718px] relative md:max-w-[547px] h-96">
         <Image
           src="/mainLeftImage.png"
           fill
@@ -11,7 +11,7 @@ export const TopBanner = () => {
         />
       </div>
       <div className="relative w-full flex flex-row">
-        <div className="w-full relative aspect-video">
+        <div className="w-full relative aspect-video max-w-[718px] md:max-w-[747px] h-96">
           <Image
             src="/mainRightImage.png"
             fill

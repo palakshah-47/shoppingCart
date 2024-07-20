@@ -1,7 +1,6 @@
 import Container from './components/Container';
 import { TopBanner } from './components/TopBanner';
 import { products } from '../../const/products';
-import { truncateText } from './utils';
 import ProductCard from './components/products/ProductCard';
 export default function Home() {
   return (
