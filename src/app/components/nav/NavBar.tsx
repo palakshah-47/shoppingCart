@@ -10,11 +10,8 @@ const NavBar = () => {
     <div className="sticky top-0 w-full bg-slate-200 z-30 shadow-sm">
       <div className="py-4 border-b-[1px]">
         <Container>
-          <div className="flex sm:grid items-center justify-between gap-3 sm:grid-cols-4">
-            <Link
-              href="/"
-              className={`${redressed.className} font-bold flex sm:col-span-1`}
-            >
+          <div className="flex sm:grid items-center justify-between gap-3 sm:grid-cols-3">
+            <Link href="/" className={`${redressed.className} font-bold flex sm:col-span-1`}>
               <img className="w-7" src={logo.src} alt="eshopLogo" />
               fingerhut
             </Link>

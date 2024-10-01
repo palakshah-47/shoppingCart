@@ -2,11 +2,7 @@ import Container from '../Container';
 import Link from 'next/link';
 import { FooterList } from './FooterList';
 import { MdFacebook } from 'react-icons/md';
-import {
-  AiFillInstagram,
-  AiFillTwitterCircle,
-  AiFillYoutube,
-} from 'react-icons/ai';
+import { AiFillInstagram, AiFillTwitterCircle, AiFillYoutube } from 'react-icons/ai';
 
 const Footer = () => {
   return (
@@ -31,18 +27,13 @@ const Footer = () => {
             <Link href="#">FAQs</Link>
             <Link href="#">Privacy Policy</Link>
           </FooterList>
-          <div className="w-full sm:w-1/2 md:w-1/4 lg:w-1/6 mb-6 md:mr-4 flex flex-col ">
+          <div className="w-1/2 sm:w-full md:w-1/4 lg:w-1/6 mb-6 md:mr-4 flex flex-col ">
             <h3 className="text-base font-bold mb-2">About Us</h3>
             <p className="mb-2">
-              At our store, we are dedicated to providing the latest and gratest
-              items in each category to our customers. With a wide selection of
-              Men/Women clothings, Home & Furnitures, Electronics and
-              Accessories.
+              At our store, we are dedicated to providing the latest and gratest items in each category to our
+              customers. With a wide selection of Men/Women clothings, Home & Furnitures, Electronics and Accessories.
             </p>
-            <p>
-              &copy; {new Date().getFullYear()} Fingernut online store. All
-              rights reserved
-            </p>
+            <p>&copy; {new Date().getFullYear()} Fingernut online store. All rights reserved</p>
           </div>
           <FooterList>
             <h3 className="text-base font-bold mb-2">Follow Us</h3>
