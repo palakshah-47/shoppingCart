@@ -38,9 +38,6 @@ public
 # Ignore markdown files (if you don't want them formatted)
 *.md
 
-# Ignore JSON files (optional, if you don't want them formatted)
-*.json
-
 # Ignore all files in a specific directory (e.g., assets)
 assets/
 
