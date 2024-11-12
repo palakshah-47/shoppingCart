@@ -9,3 +9,13 @@
 .main-text {
   @apply font-bold leading-10 text-gray-800 text-xl md:text-2xl mb-2;
 }
+
+.image-class {
+  @apply flex md:flex-row justify-center align-middle self-stretch p-0 md:w-auto md:h-full
+  opacity-0 scale-[1.1] translate-x-[-1rem]
+  rotate-[-5deg] transition-all ease-in-out;
+}
+
+.active {
+  @apply z-10 opacity-100 scale-[1] translate-x-[0] rotate-0;
+}

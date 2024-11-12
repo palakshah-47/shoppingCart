@@ -9,10 +9,8 @@ const Container: React.FC<ContainerProps> = ({ children }) => {
   max-w-[1920px]
   min-w-[360px]
   md:min-w-[200px]
-  sm:min-w-[200px]
-  mx-auto 
-  "
-    >
+  sm:min-w-[200px]  
+  ">
       {children}
     </div>
   );

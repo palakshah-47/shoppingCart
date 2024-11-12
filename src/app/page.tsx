@@ -1,7 +1,7 @@
 import Container from './components/Container';
 import { TopBanner } from './components/TopBanner';
 import { products } from '../../const/products';
-import ProductCard from './components/products/ProductCard';
+import ProductCard from '@/app/components/products/ProductCard';
 export default function Home() {
   return (
     <Container>
