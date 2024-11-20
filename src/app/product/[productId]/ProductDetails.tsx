@@ -3,8 +3,9 @@
 import SetColor from '@/app/components/products/SetColor';
 import { SetQuantity } from '@/app/components/products/SetQuantity';
 import { Rating } from '@mui/material';
-import PreviousMap from 'postcss/lib/previous-map';
 import React, { useCallback, useState } from 'react';
+import { Button } from '@/app/components/Button';
+import ProductImage from '@/app/components/products/ProductImage';
 
 interface ProductDetailsProps {
   product: any;
@@ -66,13 +67,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const handleQtyIncrease = useCallback(() => {
     if (cartProduct.quantity === 99) return;
     setCartProduct((prev) => {
-      return { ...prev, quantity: ++prev.quantity };
+      return { ...prev, quantity: prev.quantity ? ++prev.quantity : 2 };
     });
   }, [cartProduct]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <div>images</div>
+      <ProductImage cartProduct={cartProduct} product={product} handleColorSelect={handleColorSelect} />
       <div className="text-slate-500 text-sm">
         <h2 className="text-3xl font-medium text-slate-700">{product.name}</h2>
         <div className="flex items-center gap-2">
@@ -102,6 +103,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           handleQtyIncrease={handleQtyIncrease}
         />
         <Horizontal />
+        <div className="max-w-[300px]">
+          <Button label="Add to Cart" onClick={() => {}} />
+        </div>
       </div>
     </div>
   );
