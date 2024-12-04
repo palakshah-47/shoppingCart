@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import clsx from 'clsx';
 import leftbanner1 from '../../assets/images/leftbanner-1.png';
-import leftbanner2 from '../../assets/images/calvinklein-leftbanner-1.jpg';
-import leftbanner3 from '../../assets/images/calvinklein-leftbanner-2.jpg';
-import leftbanner4 from '../../assets/images/calvinklein-leftbanner-3.jpg';
+import leftbanner2 from '../../assets/images/calvinklein-leftbanner-1.png';
+import leftbanner3 from '../../assets/images/calvinklein-leftbanner-2.png';
+import leftbanner4 from '../../assets/images/calvinklein-leftbanner-3.png';
 export const ImageSlideShow = () => {
   const images = [
     { image: leftbanner1, alt: 'A fashion trend, stylish' },

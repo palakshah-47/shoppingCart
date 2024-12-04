@@ -6,9 +6,10 @@ import { Rating } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { Button } from '@/app/components/Button';
 import ProductImage from '@/app/components/products/ProductImage';
+import { Product } from '@/app/components/products/types';
 
 interface ProductDetailsProps {
-  product: any;
+  product: Product;
 }
 
 export type CartProductType = {

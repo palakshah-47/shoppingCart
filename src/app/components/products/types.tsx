@@ -1,4 +1,4 @@
-type Image = {
+export type Image = {
   color: string;
   colorCode: string;
   image: string;
@@ -13,9 +13,10 @@ export type Product = {
   inStock: boolean;
   images: Image[];
   reviews: Review[];
+  quantity: number;
 };
 
-type Review = {
+export type Review = {
   id: string;
   userId: string;
   productId: string;
@@ -26,9 +27,9 @@ type Review = {
     id: string;
     name: string;
     email: string;
-    emailVerified: boolean;
+    emailVerified?: boolean | null;
     image?: string;
-    hashedPassword?: string;
+    hashedPassword?: string | null;
     createdAt: string;
     updatedAt: string;
     role?: string;
