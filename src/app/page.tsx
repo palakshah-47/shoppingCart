@@ -4,8 +4,9 @@ import { products as hardCodedProducts } from '../../const/products';
 import ProductCard from '@/app/components/products/ProductCard';
 import { Product } from '@/app/components/products/types';
 
-const fetchProducts = async (): Promise<Product[]> => {
+const fetchProducts = async (): Promise<Product[] | null> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) return null;
   const res = await fetch(apiUrl ? `${apiUrl}/api` : '/api', { cache: 'no-cache' });
   if (!res.ok) throw new Error('Failed to fetch products');
   return res.json();
@@ -13,7 +14,7 @@ const fetchProducts = async (): Promise<Product[]> => {
 
 export default async function Home() {
   const dummyProducts = await fetchProducts();
-  const products = [...hardCodedProducts, ...dummyProducts];
+  const products = dummyProducts ? [...hardCodedProducts, ...dummyProducts] : [...hardCodedProducts];
   return (
     products.length > 0 && (
       <Container>
