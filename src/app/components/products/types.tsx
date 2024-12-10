@@ -1,11 +1,12 @@
 export type Image = {
-  color: string;
-  colorCode: string;
+  color?: string;
+  colorCode?: string;
   image: string;
+  alt: string;
 };
 export type Product = {
   id: string;
-  name: string;
+  title: string;
   description: string;
   price: number;
   brand: string;

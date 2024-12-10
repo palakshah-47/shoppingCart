@@ -30,7 +30,7 @@ export const ImageSlideShow = () => {
       fill
       priority={true}
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      className={`${currentImageIndex === index ? clsx('image-class', 'active') : 'image-class'}`}
+      className={`${currentImageIndex === index ? clsx('image-class', 'active', 'main-image') : clsx('image-class', 'main-image')}`}
     />
   ));
 };

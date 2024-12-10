@@ -66,3 +66,10 @@ export const product = {
     },
   ],
 };
+
+export const attachProductImages = (images: string[], productTitle: string) => {
+  return images.map((image: string, index: number) => ({
+    image: image,
+    alt: `${productTitle} - Image ${index + 1}`,
+  }));
+};
