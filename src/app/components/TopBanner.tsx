@@ -3,10 +3,9 @@ import Image from 'next/image';
 import { ImageSlideShow } from './images/ImageSlideShow';
 export const TopBanner = () => {
   return (
-    <div className="relative mx-auto py-8 flex flex-col md:flex-row sm:flex-col sm:w-[360px]">
+    <div className="relative pt-[0.5rem] pb-8 flex flex-col md:flex-row sm:flex-col sm:w-[360px] md:w-[400px] lg:w-[500px]">
       <div className="w-full aspect-video max-w-[718px] relative md:max-w-[547px] h-96">
         <ImageSlideShow />
-        {/* <Image src="/mainLeftImage.png" fill alt="left banner" className="main-image" /> */}
       </div>
       <div className="relative w-full flex flex-row">
         <div className="w-full relative aspect-video max-w-[718px] md:max-w-[747px] h-96 sm:min-h-[80]">
@@ -16,6 +15,7 @@ export const TopBanner = () => {
             alt="right banner"
             className="main-image"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={true}
           />
         </div>
         <div className="absolute top-1/4 md:top-1/4 sm:top-4 left-1/2 md:left-1/2 transform -translate-x-1/2 mb-8 md:mb-0 text-center flex flex-col whitespace-nowrap">

@@ -7,6 +7,7 @@ export const product = {
   brand: 'Apple',
   category: 'Phone',
   inStock: true,
+  quantity: 0,
   images: [
     {
       color: 'Black',
@@ -64,4 +65,11 @@ export const product = {
       },
     },
   ],
+};
+
+export const attachProductImages = (images: string[], productTitle: string) => {
+  return images.map((image: string, index: number) => ({
+    image: image,
+    alt: `${productTitle} - Image ${index + 1}`,
+  }));
 };

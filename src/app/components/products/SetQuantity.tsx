@@ -1,10 +1,10 @@
 'use client';
 
-import { CartProductType } from '@/app/product/[productId]/ProductDetails';
+import { CartProductType } from '@/app/products/[productId]/ProductDetails';
 
 interface SetQtyProps {
   isQtyLabelNeeded?: boolean;
-  cartProduct: CartProductType;
+  cartProduct?: CartProductType;
   handleQtyIncrease?: () => void;
   handleQtyDecrease?: () => void;
 }
@@ -21,10 +21,10 @@ export const SetQuantity: React.FC<SetQtyProps> = ({
     <div className="flex gap-8 items-center pt-3 pb-3">
       {isQtyLabelNeeded ? <span className="font-semibold">QUANTITY:</span> : null}
       <div className="flex gap-4 items-center text-base">
-        <button onClick={handleQtyDecrease} disabled={cartProduct.quantity === 1} className={btnStyle}>
+        <button onClick={handleQtyDecrease} disabled={cartProduct?.quantity === 1} className={btnStyle}>
           -
         </button>
-        <div>{cartProduct.quantity ?? 1}</div>
+        <div>{cartProduct?.quantity ?? 1}</div>
         <button onClick={handleQtyIncrease} className={btnStyle}>
           +
         </button>
