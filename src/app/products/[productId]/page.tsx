@@ -1,10 +1,7 @@
 import Container from '@/app/components/Container';
 import ProductDetails from './ProductDetails';
 import ListRating from './ListRating';
-import { Product } from '@/app/components/products/types';
 import { products } from '../../../../const/products';
-import { attachProductImages } from '@/app/utils/productHelper';
-
 async function fetchProductFromAPI(id: number) {
   const res = await fetch(`https://dummyjson.com/products/${id}`);
   if (!res.ok) {
