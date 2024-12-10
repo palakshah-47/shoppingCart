@@ -5,7 +5,8 @@ import ProductCard from '@/app/components/products/ProductCard';
 import { Product } from '@/app/components/products/types';
 
 const fetchProducts = async (): Promise<Product[]> => {
-  const res = await fetch('http://localhost:3000/api');
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${apiUrl}/api`, { cache: 'no-cache' });
   if (!res.ok) throw new Error('Failed to fetch products');
   return res.json();
 };

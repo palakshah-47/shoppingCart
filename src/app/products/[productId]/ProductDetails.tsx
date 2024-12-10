@@ -10,6 +10,10 @@ import { Product, Image } from '@/app/components/products/types';
 import isStringArray from '@/app/utils/isStringArray';
 import { attachProductImages } from '@/app/utils/productHelper';
 
+export const Horizontal = () => {
+  return <hr className="w-[30%]"></hr>;
+};
+
 interface ProductDetailsProps {
   product: Product;
 }
@@ -49,10 +53,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   const productRating =
     product && product.reviews.reduce((total: number, item: any) => total + item.rating, 0) / product.reviews.length;
-
-  const Horizontal = () => {
-    return <hr className="w-[30%]"></hr>;
-  };
 
   const handleColorSelect = useCallback(
     (value: SelectedImgType) => {
@@ -104,8 +104,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           {product?.inStock ? 'In Stock' : 'Out of Stock'}
         </div>
         <Horizontal />
-        <SetColor cartProduct={cartProduct} images={product?.images} handleColorSelect={handleColorSelect} />
-        <Horizontal />
+        {product?.images.filter((img) => img.color)?.length > 0 && (
+          <SetColor cartProduct={cartProduct} images={product?.images} handleColorSelect={handleColorSelect} />
+        )}
+        {/* <Horizontal /> */}
         <SetQuantity
           isQtyLabelNeeded={true}
           cartProduct={cartProduct}

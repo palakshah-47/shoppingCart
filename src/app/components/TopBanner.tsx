@@ -3,12 +3,12 @@ import Image from 'next/image';
 import { ImageSlideShow } from './images/ImageSlideShow';
 export const TopBanner = () => {
   return (
-    <div className="relative pl-4 py-4 pr-2 flex flex-col md:flex-row sm:flex-col sm:w-[360px] md:w-[80%]">
-      <div className="w-full md:w-[60%] aspect-video max-w-[718px] relative h-96 align-middle justify-center">
+    <div className="relative py-4 pr-2 flex flex-col md:flex-row sm:flex-col sm:w-[360px] md:w-[80%]">
+      <div className="w-full md:w-[60%] aspect-video max-w-[718px] relative h-96">
         <ImageSlideShow />
       </div>
-      <div className="relative w-full md:w-[70%] flex flex-row align-middle justify-center">
-        <div className="w-full relative aspect-video max-w-[718px] h-96 sm:h-[15rem]">
+      <div className="relative w-full md:w-[70%] flex flex-row">
+        <div className="w-full relative aspect-video max-w-[718px] h-96 sm:h-[15rem] lg:max-w-[818px]">
           <Image
             src="/mainRightImage.png"
             fill
