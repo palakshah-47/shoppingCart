@@ -6,9 +6,10 @@ import { Rating } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { Button } from '@/app/components/Button';
 import ProductImage from '@/app/components/products/ProductImage';
-import { Product, Image } from '@/app/components/products/types';
+import { Product } from '@/app/components/products/types';
 import isStringArray from '@/app/utils/isStringArray';
 import { attachProductImages } from '@/app/utils/productHelper';
+import { useCart } from '@/hooks/useCart';
 
 export const Horizontal = () => {
   return <hr className="w-[30%]"></hr>;
@@ -40,6 +41,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   if (isStringArray(product.images)) {
     product = { ...product, images: attachProductImages(product.images, product.title) };
   }
+  const { cartTotalQty } = useCart();
+  console.log(cartTotalQty);
   const [cartProduct, setCartProduct] = useState<CartProductType>({
     id: product.id,
     name: product.title,
@@ -74,12 +77,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     });
   }, [cartProduct?.quantity]);
 
-  const handleQtyIncrease = useCallback(() => {
-    if (cartProduct?.quantity === 99 || !product?.inStock) return;
+  const handleQtyIncrease = () => {
     setCartProduct((prev) => {
+      if (
+        prev?.quantity === 99 ||
+        (product?.inStock && !product?.inStock) ||
+        (product?.availabilityStatus && product?.availabilityStatus !== 'In Stock') ||
+        (product?.stock && prev?.quantity >= product?.stock)
+      )
+        return { ...prev };
       return { ...prev, quantity: prev?.quantity ? ++prev.quantity : 2 };
     });
-  }, [cartProduct]);
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -100,8 +109,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           <span className="font-semibold">BRAND: </span>
           {product?.brand}
         </div>
-        <div className={product?.inStock ? 'text-teal-500' : 'text-rose-400'}>
-          {product?.inStock ? 'In Stock' : 'Out of Stock'}
+        <div
+          className={
+            (product?.inStock ?? product?.availabilityStatus === 'In Stock') ? 'text-teal-500' : 'text-rose-400'
+          }>
+          {(product?.inStock ?? product?.availabilityStatus === 'In Stock') ? 'In Stock' : 'Out of Stock'}
         </div>
         <Horizontal />
         {product?.images.filter((img) => img.color)?.length > 0 && (

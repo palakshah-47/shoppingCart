@@ -2,8 +2,9 @@ import Container from '@/app/components/Container';
 import ProductDetails from './ProductDetails';
 import ListRating from './ListRating';
 import { products } from '../../../../const/products';
+
 async function fetchProductFromAPI(id: number) {
-  const res = await fetch(`https://dummyjson.com/products/${id}`);
+  const res = await fetch(`https://dummyjson.com/products/${id}`, { cache: 'force-cache' });
   if (!res.ok) {
     throw new Error('Product not found in API');
   }

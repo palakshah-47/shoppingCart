@@ -2,9 +2,10 @@
 import { formatPrice } from '@/app/utils/formatPrice';
 import { truncateText } from '@/app/utils/truncateText';
 import Image from 'next/image';
-import { Rating } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Product } from './types';
+import { Suspense } from 'react';
 
 interface ProductCardProps<TData> {
   data: TData;
@@ -12,7 +13,9 @@ interface ProductCardProps<TData> {
 
 const ProductCard: React.FC<ProductCardProps<Product>> = ({ data }) => {
   const router = useRouter();
+  const Rating = dynamic(() => import('@mui/material/Rating'), { ssr: false, suspense: true });
   const rating = data?.reviews?.reduce((total: number, review: any) => total + review.rating, 0) / data.reviews.length;
+
   return (
     <div
       className="col-span-1 cursor-pointer border-[1.2px]
@@ -32,17 +35,18 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({ data }) => {
         </div>
         <div className="mt-4 font-bold">{truncateText(data.brand)}</div>
         <div className="text-sm sm:text-[0.75rem]">{truncateText(data.title)}</div>
-        <div className="flex flex-row gap-1 sm:text-[0.85rem]">
-          <Rating
-            value={Math.floor(rating)}
-            readOnly
-            size="medium"
-            sx={{ fontSize: '1.5rem' }}
-            className="sm:text-[0.85rem]"
-          />
-          {data.reviews.length > 1 ? `(${data.reviews.length})` : `(${data.reviews.length})`}{' '}
-        </div>
-
+        <Suspense fallback={<div>Loading...</div>}>
+          <div className="flex flex-row gap-1 sm:text-[0.85rem]">
+            <Rating
+              value={Math.floor(rating)}
+              readOnly
+              size="medium"
+              sx={{ fontSize: '1.5rem' }}
+              className="sm:text-[0.85rem]"
+            />
+            {data.reviews.length > 1 ? `(${data.reviews.length})` : `(${data.reviews.length})`}{' '}
+          </div>
+        </Suspense>
         <div className="font-semibold">{formatPrice(data.price)}</div>
       </div>
     </div>

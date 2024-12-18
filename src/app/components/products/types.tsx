@@ -15,6 +15,8 @@ export type Product = {
   images: Image[];
   reviews: Review[];
   quantity: number;
+  availabilityStatus?: string;
+  stock?: number;
 };
 
 export type Review = {

@@ -47,7 +47,7 @@ const ProductImage: React.FC<ProductImageProps> = ({ cartProduct, product, handl
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority={false}
-                loading="eager"
+                loading="lazy"
               />
             </div>
           );
@@ -60,6 +60,8 @@ const ProductImage: React.FC<ProductImageProps> = ({ cartProduct, product, handl
           alt={cartProduct?.name ?? ''}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="w-full h-full object-contain max-h-[500px] min-h-[300px] sm:min-h-[400px]"
+          priority={false}
+          loading="lazy"
         />{' '}
       </div>
     </div>

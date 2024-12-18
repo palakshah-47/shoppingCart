@@ -35,7 +35,6 @@ export async function GET(req: NextRequest) {
   try {
     const productPromises = desiredCategories.map((category) => fetchProductsByCategory(category));
     const productArrays = await Promise.all(productPromises);
-
     const products: Product[] = productArrays.flat();
     return NextResponse.json(products);
   } catch (error) {
