@@ -3,13 +3,15 @@
 import SetColor from '@/app/components/products/SetColor';
 import { SetQuantity } from '@/app/components/products/SetQuantity';
 import { Rating } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/app/components/Button';
 import ProductImage from '@/app/components/products/ProductImage';
 import { Product } from '@/app/components/products/types';
 import isStringArray from '@/app/utils/isStringArray';
 import { attachProductImages } from '@/app/utils/productHelper';
 import { useCart } from '@/hooks/useCart';
+import { MdCheckCircle } from 'react-icons/md';
+import { useRouter } from 'next/navigation';
 
 export const Horizontal = () => {
   return <hr className="w-[30%]"></hr>;
@@ -38,11 +40,13 @@ export type SelectedImgType = {
 };
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
+  const { handleAddProductToCart, cartProducts } = useCart();
+  const [isProductInCart, setIsProductInCart] = useState(false);
+  const router = useRouter();
   if (isStringArray(product.images)) {
     product = { ...product, images: attachProductImages(product.images, product.title) };
   }
-  const { cartTotalQty } = useCart();
-  console.log(cartTotalQty);
+
   const [cartProduct, setCartProduct] = useState<CartProductType>({
     id: product.id,
     name: product.title,
@@ -77,7 +81,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     });
   }, [cartProduct?.quantity]);
 
-  const handleQtyIncrease = () => {
+  const handleQtyIncrease = useCallback(() => {
     setCartProduct((prev) => {
       if (
         prev?.quantity === 99 ||
@@ -88,7 +92,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         return { ...prev };
       return { ...prev, quantity: prev?.quantity ? ++prev.quantity : 2 };
     });
-  };
+  }, [cartProduct?.quantity]);
+
+  useEffect(() => {
+    setIsProductInCart(false);
+    if (cartProducts) {
+      const existingProduct = cartProducts.find((p) => p.id === product.id);
+      if (existingProduct) {
+        setIsProductInCart(true);
+      }
+    }
+  }, [cartProducts]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -116,20 +130,39 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           {(product?.inStock ?? product?.availabilityStatus === 'In Stock') ? 'In Stock' : 'Out of Stock'}
         </div>
         <Horizontal />
-        {product?.images.filter((img) => img.color)?.length > 0 && (
-          <SetColor cartProduct={cartProduct} images={product?.images} handleColorSelect={handleColorSelect} />
+        {isProductInCart ? (
+          <>
+            <p className="mb-2 text-slate-500 flex items-center gap-1">
+              <MdCheckCircle className="text-teal-400" size={20} />
+              <span>Product added to Cart</span>
+            </p>
+            <div className="max-w-[300px]">
+              <Button
+                label="View Cart"
+                outline
+                onClick={() => {
+                  router.push('/cart');
+                }}></Button>
+            </div>
+          </>
+        ) : (
+          <>
+            {product?.images.filter((img) => img.color)?.length > 0 && (
+              <SetColor cartProduct={cartProduct} images={product?.images} handleColorSelect={handleColorSelect} />
+            )}
+            <Horizontal />
+            <SetQuantity
+              isQtyLabelNeeded={true}
+              cartProduct={cartProduct}
+              handleQtyDecrease={handleQtyDecrease}
+              handleQtyIncrease={handleQtyIncrease}
+            />
+            <Horizontal />
+            <div className="max-w-[300px]">
+              <Button label="Add to Cart" onClick={() => handleAddProductToCart(cartProduct)} />
+            </div>
+          </>
         )}
-        {/* <Horizontal /> */}
-        <SetQuantity
-          isQtyLabelNeeded={true}
-          cartProduct={cartProduct}
-          handleQtyDecrease={handleQtyDecrease}
-          handleQtyIncrease={handleQtyIncrease}
-        />
-        <Horizontal />
-        <div className="max-w-[300px]">
-          <Button label="Add to Cart" onClick={() => {}} />
-        </div>
       </div>
     </div>
   );

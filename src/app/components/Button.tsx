@@ -16,6 +16,7 @@ export const Button: React.FC<ButtonProps> = ({ label, disabled, outline, small,
   return (
     <button
       disabled={disabled}
+      onClick={onClick}
       className={`
         disabled:opacity-70
         disabled:cursor-not-allowed
