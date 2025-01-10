@@ -13,11 +13,11 @@ const SetColor: React.FC<SetColorProps> = ({ images, cartProduct, handleColorSel
       <div className="flex gap-4 items-center pt-3 pb-3">
         <span className="font-semibold">COLOR:</span>
         <div className="flex gap-1">
-          {images?.map((image) => {
+          {images?.map((image, index) => {
             return (
               image?.color && (
                 <div
-                  key={image?.color}
+                  key={`${image?.color}-${index}`}
                   onClick={() => handleColorSelect(image)}
                   className={`h-7 w-7 rounded-full
                          border-teal-300 
