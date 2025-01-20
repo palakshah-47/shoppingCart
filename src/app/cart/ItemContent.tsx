@@ -28,9 +28,9 @@ const ItemContent: React.FC<ItemContentProps> = ({ item }) => {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
           </div>
         </Link>
-        <div className="flex flex-col justify-between">
+        <div className="flex flex-col justify-evenly">
           <Link href={`/product/${item.id}`}>{truncateText(item.name)}</Link>
-          <div>{item.selectedImg.color}</div>
+          {item?.selectedImg?.color && <div>{item.selectedImg.color}</div>}
           <div className="w-[70px]">
             <button className="text-slate-500 underline" onClick={() => handleRemoveProductFromCart(item)}>
               Remove
