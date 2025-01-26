@@ -104,7 +104,7 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({ children }) =
   const handleCartQtyDecrease = useCallback(
     (product: CartProductType) => {
       let updatedCart;
-      if (product?.quantity === 0) {
+      if (!product?.quantity || product?.quantity === 0) {
         return toast.error('Ooops! Minimum reached');
       }
       if (cartProducts) {

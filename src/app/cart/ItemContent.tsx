@@ -25,7 +25,8 @@ const ItemContent: React.FC<ItemContentProps> = ({ item }) => {
               alt={item.name}
               fill
               className="object-contain"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={false}></Image>
           </div>
         </Link>
         <div className="flex flex-col justify-evenly">

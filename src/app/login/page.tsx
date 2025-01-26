@@ -1,15 +1,16 @@
+import React from 'react';
 import Container from '../components/Container';
 import FormWrap from '../components/FormWrap';
-import RegisterForm from './RegisterForm';
+import LoginForm from './LoginForm';
 
-const Register = () => {
+const Login = () => {
   return (
     <Container>
       <FormWrap>
-        <RegisterForm />
+        <LoginForm />
       </FormWrap>
     </Container>
   );
 };
 
-export default Register;
+export default Login;

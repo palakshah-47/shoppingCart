@@ -21,7 +21,10 @@ export const SetQuantity: React.FC<SetQtyProps> = ({
     <div className="flex gap-8 items-center pt-3 pb-3">
       {isQtyLabelNeeded ? <span className="font-semibold">QUANTITY:</span> : null}
       <div className="flex gap-4 items-center text-base">
-        <button onClick={handleQtyDecrease} disabled={cartProduct?.quantity === 1} className={btnStyle}>
+        <button
+          onClick={handleQtyDecrease}
+          disabled={!cartProduct?.quantity || cartProduct?.quantity === 1}
+          className={btnStyle}>
           -
         </button>
         <div>{cartProduct?.quantity ?? 1}</div>
