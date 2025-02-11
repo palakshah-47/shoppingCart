@@ -4,6 +4,7 @@ import { Product } from '@/app/components/products/types';
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
+
 const fetchProducts = async (): Promise<Product[] | null> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   if (!apiUrl) return null;
