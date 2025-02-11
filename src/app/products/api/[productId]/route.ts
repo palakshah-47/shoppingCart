@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: { productId: string } }) {
-  console.log(params.productId);
   const { productId } = params;
   try {
     // Fetch data from the external API using the dynamic productId

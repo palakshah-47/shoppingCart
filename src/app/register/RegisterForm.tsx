@@ -1,13 +1,18 @@
 'use client';
 import { useState } from 'react';
+import axios from 'axios';
 import Heading from '../components/Heading';
 import Input from '../components/inputs/input';
 import { FieldValues, useForm, SubmitHandler } from 'react-hook-form';
 import { Button } from '../components/Button';
 import Link from 'next/link';
 import { AiOutlineGoogle } from 'react-icons/ai';
+import toast from 'react-hot-toast';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 const RegisterFrom = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -16,7 +21,31 @@ const RegisterFrom = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    console.log(data);
+    axios
+      .post('/api/register', data)
+      .then(() => {
+        toast.success('Account created successfully');
+        signIn('credentials', {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        }).then((resp) => {
+          if (resp?.ok) {
+            router.push('/cart');
+            router.refresh();
+            toast.success('Logged in successfully');
+          }
+          if (resp?.error) {
+            toast.error('Error logging in');
+          }
+        });
+      })
+      .catch(() => {
+        toast.error('Something went wrong logging in');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
   return (
     <>

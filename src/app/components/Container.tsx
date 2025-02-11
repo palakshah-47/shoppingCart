@@ -10,7 +10,7 @@ const Container: React.FC<ContainerProps> = ({ children }) => {
   min-w-[360px]
   md:min-w-[200px]
   sm:min-w-[200px]
-  pl-8 pr-8
+  pl-8 pr-8  
   ">
       {children}
     </div>
