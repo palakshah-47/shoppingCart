@@ -1,25 +1,36 @@
-import NextAuth from 'next-auth';
+import NextAuth, { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/libs/prismadb';
 import bycrypt from 'bcrypt';
 
-export default NextAuth({
+export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientSecret: process.env
+        .GOOGLE_CLIENT_SECRET as string,
     }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: {
+          label: 'Email',
+          type: 'email',
+        },
+        password: {
+          label: 'Password',
+          type: 'password',
+        },
       },
       async authorize(credentials) {
-        if (!credentials || !credentials.email || !credentials.password) {
+        if (
+          !credentials ||
+          !credentials.email ||
+          !credentials.password
+        ) {
           throw new Error('Invalid credentials');
         }
         const user = await prisma.user.findUnique({
@@ -32,7 +43,10 @@ export default NextAuth({
           throw new Error('Invalid email or password');
         }
 
-        const isCorrectPassword = await bycrypt.compare(credentials.password, user.hashedPassword);
+        const isCorrectPassword = await bycrypt.compare(
+          credentials.password,
+          user.hashedPassword,
+        );
 
         if (!isCorrectPassword) {
           throw new Error('Invalid email or password');
@@ -49,4 +63,5 @@ export default NextAuth({
     strategy: 'jwt',
   },
   secret: process.env.NEXTAUTH_SECRET,
-});
+};
+export default NextAuth(authOptions);
