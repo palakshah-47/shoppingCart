@@ -15,6 +15,7 @@ export const TopBanner = () => {
             alt="right banner"
             className="main-image"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={true}
           />
         </div>
         <div className="absolute top-1/4 md:top-1/4 sm:top-4 left-1/2 md:left-1/2 transform -translate-x-1/2 mb-8 md:mb-0 text-center flex flex-col whitespace-nowrap">

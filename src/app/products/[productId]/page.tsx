@@ -1,14 +1,20 @@
 import Container from '@/app/components/Container';
-import ProductDetails from './ProductDetails';
+// import ProductDetails from './ProductDetails';
 import ListRating from './ListRating';
 import { products } from '../../../../const/products';
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 
-async function fetchProductFromAPI(id: number) {
-  const res = await fetch(`https://dummyjson.com/products/${id}`, { cache: 'force-cache' });
+async function fetchProductFromAPI(productId: number) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) return null;
+  const res = await fetch(`${apiUrl}/products/api/${productId}`, { cache: 'force-cache' });
+  console.log('Cache-Control:', res.headers.get('Cache-Control'));
+  console.log('X-Nextjs-Cache:', res.headers.get('x-nextjs-cache'));
   if (!res.ok) {
     throw new Error('Product not found in API');
   }
-  return res.json();
+  return await res.json();
 }
 
 interface ProductPageProps {
@@ -37,14 +43,19 @@ const ProductPage = async ({ params }: ProductPageProps) => {
       );
     }
   }
+
+  const ProductDetails = dynamic(() => import('./ProductDetails'), { ssr: false, suspense: true });
+
   return (
     <div className="p-8">
       <Container>
-        <ProductDetails product={product} />
-        <div className="flex flex-col mt-20 gap-4">
-          <div>Add Rating</div>
-          <ListRating product={product} />
-        </div>
+        <Suspense fallback={<div>Loading item...</div>}>
+          <ProductDetails product={product} />
+          <div className="flex flex-col mt-20 gap-4">
+            <div>Add Rating</div>
+            <ListRating product={product} />
+          </div>
+        </Suspense>
       </Container>
     </div>
   );

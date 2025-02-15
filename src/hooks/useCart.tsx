@@ -33,9 +33,9 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({ children }) =
     const getTotals = () => {
       if (cartProducts) {
         const { total, qty } = cartProducts.reduce(
-          (acc, itme) => {
-            acc.total += itme.price * itme.quantity;
-            acc.qty += itme.quantity;
+          (acc, item) => {
+            acc.total += item.price * (item?.quantity ?? 1);
+            acc.qty += item?.quantity ?? 1;
             return acc;
           },
           { total: 0, qty: 0 },
@@ -104,7 +104,8 @@ export const CartContextProvider: React.FC<CartProviderProps> = ({ children }) =
   const handleCartQtyDecrease = useCallback(
     (product: CartProductType) => {
       let updatedCart;
-      if (product?.quantity === 0) {
+
+      if (!product?.quantity || product?.quantity === 0) {
         return toast.error('Ooops! Minimum reached');
       }
       if (cartProducts) {

@@ -33,8 +33,10 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({ data }) => {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
-        <div className="mt-4 font-bold">{truncateText(data.brand)}</div>
-        <div className="text-sm sm:text-[0.75rem]">{truncateText(data.title)}</div>
+
+        {data?.brand && <div className="mt-4 font-bold">{truncateText(data.brand)}</div>}
+        <div className="text-sm sm:text-[0.75rem]">{truncateText(data?.title)}</div>
+
         <Suspense fallback={<div>Loading...</div>}>
           <div className="flex flex-row gap-1 sm:text-[0.85rem]">
             <Rating

@@ -73,7 +73,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   );
 
   const handleQtyDecrease = useCallback(() => {
-    if (cartProduct?.quantity === 1) return;
+    if (!cartProduct?.quantity || cartProduct?.quantity === 1) return;
     if (cartProduct?.quantity === undefined) {
       setCartProduct({ ...cartProduct, quantity: 0 });
       return;
@@ -160,9 +160,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               handleQtyIncrease={handleQtyIncrease}
             />
             <Horizontal />
-            <div className="max-w-[300px]">
-              <Button label="Add to Cart" onClick={() => handleAddProductToCart(cartProduct)} />
-            </div>
+            {(product?.availabilityStatus && product?.availabilityStatus === 'In Stock') || product?.inStock ? (
+              <div className="max-w-[300px]">
+                <Button label="Add to Cart" onClick={() => handleAddProductToCart(cartProduct)} />
+              </div>
+            ) : null}
           </>
         )}
       </div>
