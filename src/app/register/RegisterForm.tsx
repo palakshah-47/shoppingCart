@@ -8,7 +8,7 @@ import {
   useForm,
   SubmitHandler,
 } from 'react-hook-form';
-import { Button } from '../components/Button';
+import { Button } from '../components/ui/Button';
 import Link from 'next/link';
 import { AiOutlineGoogle } from 'react-icons/ai';
 import toast from 'react-hot-toast';
