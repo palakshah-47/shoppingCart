@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { AiFillCaretDown } from 'react-icons/ai';
-import Avatar from '../Avatar';
+import Avatar from '../ui/Avatar';
 import Link from 'next/link';
 import MenuItem from './MenuItem';
 import { signOut } from 'next-auth/react';
@@ -40,11 +40,12 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
                     Your Orders
                   </MenuItem>
                 </Link>
-                <Link href={'/admin'}>
+                {/* <Link href={'/admin'}>
                   <MenuItem onClick={toggleOpen}>
                     Admin Dashboard
                   </MenuItem>
-                </Link>
+                </Link> */}
+                <hr />
                 <MenuItem
                   onClick={() => {
                     toggleOpen();
