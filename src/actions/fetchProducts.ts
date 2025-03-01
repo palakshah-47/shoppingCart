@@ -13,6 +13,29 @@ export const fetchProductsByCategory = async ({
   skip?: number;
 }): Promise<Product[]> => {
   // const res = await fetch(`https://dummyjson.com/products/category/${category}`);
+  //   const desiredCategories = [
+  //     'furniture',
+  //     'home-decoration',
+  //     'laptops',
+  //     'mens-shirts',
+  //     'mens-shoes',
+  //     'mens-watches',
+  //     'mobile-accessories',
+  //     'smartphones',
+  //     'sunglasses',
+  //     'tablets',
+  //     'womens-bags',
+  //     'womens-dresses',
+  //     'womens-jewellery',
+  //     'womens-shoes',
+  //     'womens-watches',
+  //   ];
+
+  //   // console.log(params);
+  //   try {
+  //     // const productPromises = desiredCategories.map((category) => fetchProductsByCategory(category));
+  //     // const productArrays = await Promise.all(productPromises);
+  //     // const products: Product[] = productArrays.flat();
   const url =
     category === 'all'
       ? `https://dummyjson.com/products?limit=${limit || 10}&skip=${skip || 0}`
