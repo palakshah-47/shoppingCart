@@ -13,10 +13,7 @@ export const LoadMoreProducts = () => {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true); // Track if more products exist
 
-  const { ref, inView } = useInView({
-    threshold: 1.0,
-    rootMargin: '30px',
-  });
+  const { ref, inView } = useInView();
 
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -28,14 +25,19 @@ export const LoadMoreProducts = () => {
       (await fetchProductsByCategory({
         category: 'all',
         limit: 10,
-        skip: skip + 10,
+        skip: skip === 10 ? skip + 30 : skip + 10,
       })) ?? [];
 
-    if (data.length < 10) {
+    if (data.length === 0) {
       setHasMore(false); // No more products to load
     } else {
       setProducts((prev: Product[]) => [...prev, ...data]);
-      setSkip((prev) => prev + 10);
+
+      if (skip === 10) {
+        setSkip((prev) => prev + 30);
+      } else {
+        setSkip((prev) => prev + 10);
+      }
     }
   };
 
