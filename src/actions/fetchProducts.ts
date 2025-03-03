@@ -42,7 +42,7 @@ export const fetchProductsByCategory = async ({
   const categoryQuery = desiredCategories.join(',');
   const url =
     category === 'all'
-      ? `https://dummyjson.com/products?limit=${limit || 10}&skip=${skip || 0}&category=${categoryQuery}`
+      ? `https://dummyjson.com/products?limit=${limit || 10}&skip=${skip || 0}`
       : `https://dummyjson.com/products/category/${category}?limit=${limit || 10}&skip=${skip || 0}`;
 
   try {
