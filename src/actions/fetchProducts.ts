@@ -13,33 +13,38 @@ export const fetchProductsByCategory = async ({
   skip?: number;
 }): Promise<Product[]> => {
   // const res = await fetch(`https://dummyjson.com/products/category/${category}`);
-  //   const desiredCategories = [
-  //     'furniture',
-  //     'home-decoration',
-  //     'laptops',
-  //     'mens-shirts',
-  //     'mens-shoes',
-  //     'mens-watches',
-  //     'mobile-accessories',
-  //     'smartphones',
-  //     'sunglasses',
-  //     'tablets',
-  //     'womens-bags',
-  //     'womens-dresses',
-  //     'womens-jewellery',
-  //     'womens-shoes',
-  //     'womens-watches',
-  //   ];
+  const desiredCategories = [
+    'beauty',
+    'fragrances',
+    'furniture',
+    'home-decoration',
+    'kitchen-accessories',
+    'laptops',
+    'mens-shirts',
+    'mens-shoes',
+    'mens-watches',
+    'mobile-accessories',
+    'motorcycle',
+    'skin-care',
+    'smartphones',
+    'sports-accessories',
+    'sunglasses',
+    'tablets',
+    'tops',
+    'vehicle',
+    'womens-bags',
+    'womens-dresses',
+    'womens-jewellery',
+    'womens-shoes',
+    'womens-watches',
+  ];
 
-  //   // console.log(params);
-  //   try {
-  //     // const productPromises = desiredCategories.map((category) => fetchProductsByCategory(category));
-  //     // const productArrays = await Promise.all(productPromises);
-  //     // const products: Product[] = productArrays.flat();
+  const categoryQuery = desiredCategories.join(',');
   const url =
     category === 'all'
       ? `https://dummyjson.com/products?limit=${limit || 10}&skip=${skip || 0}`
       : `https://dummyjson.com/products/category/${category}?limit=${limit || 10}&skip=${skip || 0}`;
+
   try {
     const res = await fetch(url);
     if (!res.ok) {
@@ -47,7 +52,11 @@ export const fetchProductsByCategory = async ({
     }
     const { products } = await res.json();
     if (products.length === 0) return products;
-    const transformedProducts = products?.map(
+    const filteredProducts = products.filter(
+      (product: Product) =>
+        product.category !== 'groceries',
+    );
+    const transformedProducts = filteredProducts?.map(
       (product: any) => ({
         ...product,
         images: attachProductImages(
