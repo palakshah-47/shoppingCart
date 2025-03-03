@@ -13,14 +13,12 @@ export const LoadMoreProducts = () => {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true); // Track if more products exist
 
-  const { ref, inView } = useInView();
-
-  const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+  const { ref, inView } = useInView({
+    rootMargin: '100px',
+    threshold: 1.0,
+  });
 
   const loadMoreProducts = async () => {
-    console.log('inside load more products');
-    await delay(2000);
     const data =
       (await fetchProductsByCategory({
         category: 'all',
