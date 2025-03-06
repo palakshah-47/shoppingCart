@@ -8,8 +8,8 @@ import { Suspense } from 'react';
 const fetchProducts = async (): Promise<
   Product[] | null
 > => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) return null;
+  // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // if (!apiUrl) return null;
   const res = await fetchProductsByCategory({
     category: 'all',
   });
@@ -24,8 +24,8 @@ const ProdcutsPage = async () => {
 
   return (
     <>
-      <ProductList products={products} />
-      <LoadMoreProducts />
+      {/* <ProductList products={products} /> */}
+      <LoadMoreProducts initialProducts={products} />
     </>
   );
 };
