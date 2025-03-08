@@ -71,7 +71,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
         outline
         label="Continue with Google"
         icon={AiOutlineGoogle}
-        onClick={() => {}}></Button>
+        onClick={() => {
+          signIn('google');
+        }}></Button>
       <hr className="bg-slate-300 w-full h-px" />
       <Input
         id="email"
