@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Heading from '../components/Heading';
 import Input from '../components/inputs/input';
@@ -14,9 +14,24 @@ import { AiOutlineGoogle } from 'react-icons/ai';
 import toast from 'react-hot-toast';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-const RegisterFrom = () => {
+import { SafeUser } from '@/types';
+
+interface RegisterFormProps {
+  currentUser: SafeUser | null;
+}
+
+const RegisterFrom: React.FC<RegisterFormProps> = ({
+  currentUser,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (currentUser) {
+      router.push('/cart');
+      router.refresh();
+    }
+  }, []);
 
   const {
     register,
@@ -58,14 +73,22 @@ const RegisterFrom = () => {
         setIsLoading(false);
       });
   };
+
+  if (currentUser) {
+    return (
+      <p className="text-center">
+        Logged in. Redirecting...
+      </p>
+    );
+  }
   return (
     <>
       <Heading title="Sign up for fingerhut" />
       <Button
         outline
-        label="Sign up with Google"
+        label="Continue with Google"
         icon={AiOutlineGoogle}
-        onClick={() => {}}></Button>
+        onClick={() => {signIn('google')}}></Button>
       <hr className="bg-slate-300 w-full h-px" />
       <Input
         id="name"

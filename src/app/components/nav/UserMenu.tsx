@@ -26,7 +26,11 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           onClick={toggleOpen}
           className="p-2 border-[1px] border-slate-400
         flex flex-row items-center gap-2 rounded-full cursor-pointer hover:shadow-md transition text-slate-700">
-          <Avatar height={25} width={25} />
+          <Avatar
+            height={25}
+            width={25}
+            src={currentUser?.image}
+          />
           <AiFillCaretDown />
         </div>
         {isOpen && (

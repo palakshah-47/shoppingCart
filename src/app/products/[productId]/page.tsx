@@ -8,9 +8,11 @@ import dynamic from 'next/dynamic';
 async function fetchProductFromAPI(productId: number) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   if (!apiUrl) return null;
-  const res = await fetch(`${apiUrl}/products/api/${productId}`, { cache: 'force-cache' });
-  console.log('Cache-Control:', res.headers.get('Cache-Control'));
-  console.log('X-Nextjs-Cache:', res.headers.get('x-nextjs-cache'));
+  const res = await fetch(
+    `${apiUrl}/products/api/${productId}`,
+    { cache: 'force-cache' },
+  );
+
   if (!res.ok) {
     throw new Error('Product not found in API');
   }
@@ -21,10 +23,14 @@ interface ProductPageProps {
   params: { productId: string };
 }
 
-const ProductPage = async ({ params }: ProductPageProps) => {
+const ProductPage = async ({
+  params,
+}: ProductPageProps) => {
   const { productId } = params;
   // Check in hardcoded products first
-  const hardcodedProduct = products.find((p) => p.id === productId);
+  const hardcodedProduct = products.find(
+    (p) => p.id === productId,
+  );
 
   let product;
   if (hardcodedProduct) {
@@ -44,12 +50,17 @@ const ProductPage = async ({ params }: ProductPageProps) => {
     }
   }
 
-  const ProductDetails = dynamic(() => import('./ProductDetails'), { ssr: false, suspense: true });
+  const ProductDetails = dynamic(
+    () => import('./ProductDetails'),
+    { ssr: false, suspense: true },
+  );
 
   return (
     <div className="p-8">
       <Container>
-        <Suspense fallback={<div>Loading item...</div>}>
+        <Suspense
+          key={product.id}
+          fallback={<div>Loading item...</div>}>
           <ProductDetails product={product} />
           <div className="flex flex-col mt-20 gap-4">
             <div>Add Rating</div>
