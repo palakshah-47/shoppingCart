@@ -14,8 +14,9 @@ import { Product } from '@/app/components/products/types';
 import isStringArray from '@/app/utils/isStringArray';
 import { attachProductImages } from '@/app/utils/productHelper';
 import { useCart } from '@/hooks/useCart';
-import { MdCheckCircle } from 'react-icons/md';
+import { MdCheckCircle, MdArrowBack } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export const Horizontal = () => {
   return <hr className="w-[30%]"></hr>;
@@ -228,6 +229,12 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             ) : null}
           </>
         )}
+        <Link
+          href={'/'}
+          className="text-slate-500 flex items-center gap-1 mt-2">
+          <MdArrowBack />
+          <span>Continue Shopping</span>
+        </Link>
       </div>
     </div>
   );

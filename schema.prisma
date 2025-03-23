@@ -86,7 +86,7 @@ model Order{
   name String
   description String
   category String
-  brand String
+  brand String?
   price Float
   selectedImg Image
   quantity Int
