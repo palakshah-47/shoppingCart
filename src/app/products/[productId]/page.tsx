@@ -19,14 +19,16 @@ async function fetchProductFromAPI(productId: number) {
   return await res.json();
 }
 
-interface ProductPageProps {
-  params: { productId: string };
+export interface ProductPageProps {
+  params: Promise<{ productId: string }>;
 }
 
 const ProductPage = async ({
   params,
 }: ProductPageProps) => {
+  // const promise = params;
   const { productId } = await params;
+  // const productId = promise.productId;
   // Check in hardcoded products first
   const hardcodedProduct = products.find(
     (p) => p.id === productId,

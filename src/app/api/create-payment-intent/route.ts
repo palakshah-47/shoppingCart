@@ -18,7 +18,7 @@ const calculateOrderAmount = (items: CartProductType[]) => {
   return totalPrice;
 };
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
