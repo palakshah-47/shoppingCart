@@ -98,7 +98,7 @@ export const CartContextProvider: React.FC<
             p.id === product.id
               ? {
                   ...product,
-                  quantity: (product?.quantity ?? 0) + 1,
+                  quantity: product?.quantity ?? 1,
                 }
               : p,
           );
@@ -125,45 +125,6 @@ export const CartContextProvider: React.FC<
         JSON.stringify(updatedCart),
       );
       setCartProducts(updatedCart);
-      // setCartProducts((prev) => {
-      //   let updatedCart;
-      //   if (prev) {
-      //     const existingProduct = prev?.find(
-      //       (p) => p.id === product.id,
-      //     );
-      //     if (existingProduct) {
-      //       updatedCart = prev.map((p) =>
-      //         p.id === product.id
-      //           ? {
-      //               ...product,
-      //               quantity: product?.quantity ?? 1,
-      //             }
-      //           : p,
-      //       );
-      //     } else {
-      //       updatedCart = [
-      //         ...prev,
-      //         {
-      //           ...product,
-      //           quantity: product?.quantity ?? 1,
-      //         },
-      //       ];
-      //     }
-      //   } else {
-      //     updatedCart = [
-      //       {
-      //         ...product,
-      //         quantity: product?.quantity ?? 1,
-      //       },
-      //     ];
-      //   }
-      //   toast.success('Prodcut added to cart');
-      //   localStorage.setItem(
-      //     'eShopCartItems',
-      //     JSON.stringify(updatedCart),
-      //   );
-      //   return updatedCart;
-      // });
     },
     [cartProducts],
   );
