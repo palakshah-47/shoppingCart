@@ -1,8 +1,8 @@
 import Stripe from 'stripe';
-import prisma from '@/libs/prismadb';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import { CartProductType } from '@prisma/client';
+import prisma from '@/libs/prismadb';
 
 const stripe = new Stripe(
   process.env.STRIPE_SECRET_KEY as string,
@@ -65,7 +65,7 @@ export async function POST(req: Request, res: Response) {
         ]);
 
       if (!existing_order) {
-        return NextResponse.error()
+        return NextResponse.error();
       }
       return NextResponse.json({
         paymentIntent: updated_intent,
