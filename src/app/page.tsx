@@ -1,3 +1,4 @@
+export const revalidate = 0;
 import Container from '@/app/components/Container';
 import { TopBanner } from '@/app/components/TopBanner';
 import { Suspense } from 'react';
