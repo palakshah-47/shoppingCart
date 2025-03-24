@@ -17,7 +17,6 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({
   const router = useRouter();
   const Rating = dynamic(
     () => import('@mui/material/Rating'),
-    { ssr: false, suspense: true },
   );
   const rating =
     data?.reviews?.reduce(

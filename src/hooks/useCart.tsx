@@ -88,47 +88,84 @@ export const CartContextProvider: React.FC<
 
   const handleAddProductToCart = useCallback(
     (product: CartProductType) => {
-      setCartProducts((prev) => {
-        let updatedCart;
-        if (prev) {
-          const existingProduct = prev?.find(
-            (p) => p.id === product.id,
+      let updatedCart;
+      if (cartProducts) {
+        const existingProduct = cartProducts?.find(
+          (p) => p.id === product.id,
+        );
+        if (existingProduct) {
+          updatedCart = cartProducts.map((p) =>
+            p.id === product.id
+              ? {
+                  ...product,
+                  quantity: (product?.quantity ?? 0) + 1,
+                }
+              : p,
           );
-          if (existingProduct) {
-            updatedCart = prev.map((p) =>
-              p.id === product.id
-                ? {
-                    ...product,
-                    quantity: product?.quantity ?? 1,
-                  }
-                : p,
-            );
-          } else {
-            updatedCart = [
-              ...prev,
-              {
-                ...product,
-                quantity: product?.quantity ?? 1,
-              },
-            ];
-          }
         } else {
           updatedCart = [
+            ...cartProducts,
             {
               ...product,
               quantity: product?.quantity ?? 1,
             },
           ];
         }
-        toast.success('Prodcut added to cart');
-        localStorage.setItem(
-          'eShopCartItems',
-          JSON.stringify(updatedCart),
-        );
-        return updatedCart;
-      });
+      } else {
+        updatedCart = [
+          {
+            ...product,
+            quantity: product?.quantity ?? 1,
+          },
+        ];
+      }
+      toast.success('Prodcut added to cart');
+      localStorage.setItem(
+        'eShopCartItems',
+        JSON.stringify(updatedCart),
+      );
+      setCartProducts(updatedCart);
+      // setCartProducts((prev) => {
+      //   let updatedCart;
+      //   if (prev) {
+      //     const existingProduct = prev?.find(
+      //       (p) => p.id === product.id,
+      //     );
+      //     if (existingProduct) {
+      //       updatedCart = prev.map((p) =>
+      //         p.id === product.id
+      //           ? {
+      //               ...product,
+      //               quantity: product?.quantity ?? 1,
+      //             }
+      //           : p,
+      //       );
+      //     } else {
+      //       updatedCart = [
+      //         ...prev,
+      //         {
+      //           ...product,
+      //           quantity: product?.quantity ?? 1,
+      //         },
+      //       ];
+      //     }
+      //   } else {
+      //     updatedCart = [
+      //       {
+      //         ...product,
+      //         quantity: product?.quantity ?? 1,
+      //       },
+      //     ];
+      //   }
+      //   toast.success('Prodcut added to cart');
+      //   localStorage.setItem(
+      //     'eShopCartItems',
+      //     JSON.stringify(updatedCart),
+      //   );
+      //   return updatedCart;
+      // });
     },
-    [],
+    [cartProducts],
   );
 
   const handleRemoveProductFromCart = useCallback(

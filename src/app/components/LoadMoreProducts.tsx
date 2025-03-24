@@ -78,7 +78,7 @@ export const LoadMoreProducts = ({
           key={`product-${index}-${product?.id}`}
           scroll={true}>
           <ProductCard
-            key={`product-${index}-${product?.title}`}
+            key={`product-${index}-${product?.id}`}
             data={product}
           />
         </Link>

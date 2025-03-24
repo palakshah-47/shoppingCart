@@ -229,12 +229,19 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             ) : null}
           </>
         )}
-        <Link
+        {/* <Link
           href={'/'}
+          scroll={false}
           className="text-slate-500 flex items-center gap-1 mt-2">
           <MdArrowBack />
           <span>Continue Shopping</span>
-        </Link>
+        </Link> */}
+        <button
+          onClick={router.back}
+          className="text-slate-500 flex items-center gap-1 mt-2">
+          <MdArrowBack />
+          <span>Continue Shopping</span>
+        </button>
       </div>
     </div>
   );
