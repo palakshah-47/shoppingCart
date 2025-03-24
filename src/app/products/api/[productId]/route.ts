@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { productId: string } },
+  { params }: { params: Promise<{ productId: string }> },
 ) {
-  const { productId } = params;
+  const { productId } = await params;
   try {
     // Fetch data from the external API using the dynamic productId
     const apiResponse = await fetch(

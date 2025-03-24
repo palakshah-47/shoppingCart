@@ -13,7 +13,7 @@ const ProdcutList = ({
       {products ? (
         products.map((product: Product, index) => (
           <ProductCard
-            key={`product-${index}-${product?.title}`}
+            key={`product-${index}-${product?.id}`}
             data={product}
           />
         ))

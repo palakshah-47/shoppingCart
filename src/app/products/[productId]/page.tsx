@@ -19,14 +19,16 @@ async function fetchProductFromAPI(productId: number) {
   return await res.json();
 }
 
-interface ProductPageProps {
-  params: { productId: string };
+export interface ProductPageProps {
+  params: Promise<{ productId: string }>;
 }
 
 const ProductPage = async ({
   params,
 }: ProductPageProps) => {
-  const { productId } = params;
+  // const promise = params;
+  const { productId } = await params;
+  // const productId = promise.productId;
   // Check in hardcoded products first
   const hardcodedProduct = products.find(
     (p) => p.id === productId,
@@ -52,7 +54,6 @@ const ProductPage = async ({
 
   const ProductDetails = dynamic(
     () => import('./ProductDetails'),
-    { ssr: false, suspense: true },
   );
 
   return (
@@ -61,7 +62,7 @@ const ProductPage = async ({
         <Suspense
           key={product.id}
           fallback={<div>Loading item...</div>}>
-          <ProductDetails product={product} />
+          {product && <ProductDetails product={product} />}
           <div className="flex flex-col mt-20 gap-4">
             <div>Add Rating</div>
             <ListRating product={product} />

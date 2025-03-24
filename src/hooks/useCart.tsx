@@ -22,6 +22,10 @@ type CartContextType = {
   handleCartQtyIncrease: (product: CartProductType) => void;
   handleCartQtyDecrease: (product: CartProductType) => void;
   handleClearCart: () => void;
+  paymentIntent: string | null;
+  handlePaymentIntent: (
+    paymentIntent: string | null,
+  ) => void;
 };
 
 export const CartContext =
@@ -38,13 +42,24 @@ export const CartContextProvider: React.FC<
     CartProductType[] | null
   >(null);
   const [cartTotalAmount, setCartTotalAmount] = useState(0);
+  const [paymentIntent, setPaymentIntent] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     const storedCartItems: any =
       localStorage.getItem('eShopCartItems') || '[]';
     const cProducts: CartProductType[] | null =
       JSON.parse(storedCartItems);
+    const eShopPaymentIntent: any = localStorage.getItem(
+      'eShopPaymentIntent',
+    );
+    const paymentIntent: string | null = JSON.parse(
+      eShopPaymentIntent,
+    );
+
     setCartProducts(cProducts);
+    setPaymentIntent(paymentIntent);
   }, []);
 
   useEffect(() => {
@@ -52,7 +67,9 @@ export const CartContextProvider: React.FC<
       if (cartProducts) {
         const { total, qty } = cartProducts.reduce(
           (acc, item) => {
-            acc.total += item.price * (item?.quantity ?? 1);
+            acc.total +=
+              Math.round(item.price) *
+              (item?.quantity ?? 1);
             acc.qty += item?.quantity ?? 1;
             return acc;
           },
@@ -71,33 +88,84 @@ export const CartContextProvider: React.FC<
 
   const handleAddProductToCart = useCallback(
     (product: CartProductType) => {
-      setCartProducts((prev) => {
-        let updatedCart;
-        if (prev) {
-          const existingProduct = prev?.find(
-            (p) => p.id === product.id,
-          );
-          if (existingProduct) {
-            updatedCart = prev.map((p) =>
-              p.id === product.id
-                ? { ...product, quantity: product.quantity }
-                : p,
-            );
-          } else {
-            updatedCart = [...prev, product];
-          }
-        } else {
-          updatedCart = [product];
-        }
-        toast.success('Prodcut added to cart');
-        localStorage.setItem(
-          'eShopCartItems',
-          JSON.stringify(updatedCart),
+      let updatedCart;
+      if (cartProducts) {
+        const existingProduct = cartProducts?.find(
+          (p) => p.id === product.id,
         );
-        return updatedCart;
-      });
+        if (existingProduct) {
+          updatedCart = cartProducts.map((p) =>
+            p.id === product.id
+              ? {
+                  ...product,
+                  quantity: (product?.quantity ?? 0) + 1,
+                }
+              : p,
+          );
+        } else {
+          updatedCart = [
+            ...cartProducts,
+            {
+              ...product,
+              quantity: product?.quantity ?? 1,
+            },
+          ];
+        }
+      } else {
+        updatedCart = [
+          {
+            ...product,
+            quantity: product?.quantity ?? 1,
+          },
+        ];
+      }
+      toast.success('Prodcut added to cart');
+      localStorage.setItem(
+        'eShopCartItems',
+        JSON.stringify(updatedCart),
+      );
+      setCartProducts(updatedCart);
+      // setCartProducts((prev) => {
+      //   let updatedCart;
+      //   if (prev) {
+      //     const existingProduct = prev?.find(
+      //       (p) => p.id === product.id,
+      //     );
+      //     if (existingProduct) {
+      //       updatedCart = prev.map((p) =>
+      //         p.id === product.id
+      //           ? {
+      //               ...product,
+      //               quantity: product?.quantity ?? 1,
+      //             }
+      //           : p,
+      //       );
+      //     } else {
+      //       updatedCart = [
+      //         ...prev,
+      //         {
+      //           ...product,
+      //           quantity: product?.quantity ?? 1,
+      //         },
+      //       ];
+      //     }
+      //   } else {
+      //     updatedCart = [
+      //       {
+      //         ...product,
+      //         quantity: product?.quantity ?? 1,
+      //       },
+      //     ];
+      //   }
+      //   toast.success('Prodcut added to cart');
+      //   localStorage.setItem(
+      //     'eShopCartItems',
+      //     JSON.stringify(updatedCart),
+      //   );
+      //   return updatedCart;
+      // });
     },
-    [],
+    [cartProducts],
   );
 
   const handleRemoveProductFromCart = useCallback(
@@ -182,6 +250,17 @@ export const CartContextProvider: React.FC<
     );
   }, [cartProducts]);
 
+  const handlePaymentIntent = useCallback(
+    (val: string | null) => {
+      setPaymentIntent(paymentIntent);
+      localStorage.setItem(
+        'eShopPaymentIntent',
+        JSON.stringify(val),
+      );
+    },
+    [paymentIntent],
+  );
+
   const value: CartContextType = {
     cartTotalQty,
     cartTotalAmount,
@@ -191,6 +270,8 @@ export const CartContextProvider: React.FC<
     handleCartQtyIncrease,
     handleCartQtyDecrease,
     handleClearCart,
+    paymentIntent,
+    handlePaymentIntent,
   };
 
   return (

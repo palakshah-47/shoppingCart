@@ -1,9 +1,7 @@
 import { products as hardCodedProducts } from '../../const/products';
 import { Product } from '@/app/components/products/types';
-import ProductList from './ProductList';
 import { fetchProductsByCategory } from '@/actions/fetchProducts';
 import { LoadMoreProducts } from '@/app/components/LoadMoreProducts';
-import { Suspense } from 'react';
 
 const fetchProducts = async (): Promise<
   Product[] | null
