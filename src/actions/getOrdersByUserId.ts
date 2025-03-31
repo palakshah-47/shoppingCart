@@ -1,8 +1,10 @@
+import prisma from '@/libs/prismadb';
+
 export default async function getOrdersByUserId(
   userId: string,
 ) {
   try {
-    const orders = await prisma?.order.findMany({
+    const orders = await prisma.order.findMany({
       include: {
         user: true,
       },
@@ -13,6 +15,7 @@ export default async function getOrdersByUserId(
         userId: userId,
       },
     });
+    console.log(orders);
     return orders;
   } catch (error: any) {
     console.error('Error fetching orders:', error);

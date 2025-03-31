@@ -1,6 +1,7 @@
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getServerSession } from 'next-auth';
 import prisma from '@/libs/prismadb';
+import { notFound } from 'next/navigation';
 
 export async function getSession() {
   return await getServerSession(authOptions);
@@ -20,7 +21,7 @@ export async function getCurrentUser() {
     });
 
     if (!currentUser) {
-      return null;
+      notFound();
     }
     return {
       ...currentUser,

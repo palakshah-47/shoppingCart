@@ -1,12 +1,7 @@
 import prisma from '@/libs/prismadb';
 
-// interface IParams {
-//   orderId: string;
-// }
-
 export async function getOrderById(orderId: string) {
-  try {
-    // const { orderId } = params;
+  try {    
     const order = await prisma.order.findUnique({
       where: {
         id: orderId,

@@ -2,7 +2,6 @@
 const nextConfig = {
   experimental: {
     serverActions: true,
-    esmExternals: false,
   },
   images: {
     domains: [
