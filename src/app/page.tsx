@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import ProdcutsPage from './ProductsPage';
 import SkeletonCard from './components/ui/SkeletonCard';
 
-export default async function Home() {
+export default function Home() {
   return (
     <Container>
       <TopBanner />
