@@ -4,7 +4,7 @@ export default async function getOrdersByUserId(
   userId: string,
 ) {
   try {
-    const orders = await prisma?.order.findMany({
+    const orders = await prisma.order.findMany({
       include: {
         user: true,
       },
