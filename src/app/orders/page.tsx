@@ -4,7 +4,7 @@ import NullData from '../components/NullData';
 import getOrdersByUserId from '@/actions/getOrdersByUserId';
 import Container from '../components/Container';
 import OrdersClient from './OrdersClient';
-import prisma from '@/libs/prismadb';
+
 
 const Orders = async () => {
   const currentUser = await getCurrentUser();
