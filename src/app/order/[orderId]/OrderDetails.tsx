@@ -1,5 +1,5 @@
 'use client';
-
+import prisma from '@/libs/prismadb';
 import { Order } from '@prisma/client';
 import React from 'react';
 import Heading from '@/app/components/Heading';

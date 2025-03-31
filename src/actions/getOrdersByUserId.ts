@@ -15,6 +15,7 @@ export default async function getOrdersByUserId(
         userId: userId,
       },
     });
+    console.log(orders);
     return orders;
   } catch (error: any) {
     console.error('Error fetching orders:', error);

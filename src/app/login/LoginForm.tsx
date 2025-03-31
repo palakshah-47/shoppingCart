@@ -41,6 +41,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   }, []);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    console.log(data);
     setIsLoading(true);
     signIn('credentials', {
       ...data,
