@@ -6,7 +6,6 @@ import moment from 'moment';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import {
   MdAccessTimeFilled,
-  MdCached,
   MdDeliveryDining,
   MdDone,
   MdRemoveRedEye,
@@ -27,19 +26,17 @@ const OrdersClient: React.FC<OrdersClientProps> = ({
 }) => {
   const router = useRouter();
   let rows: any = [];
+  rows = orders.map((order: ExtendedOrder) => {
+    return {
+      id: order.id,
+      customer: order.user.name,
+      amount: formatPrice(order.amount / 100),
+      paymentStatus: order.status,
+      date: moment(order.createdAt).fromNow(),
+      deliveryStatus: order.deliveryStatus,
+    };
+  });
 
-  if (orders) {
-    rows = orders.map((order: ExtendedOrder) => {
-      return {
-        id: order.id,
-        customer: order.user.name,
-        amount: formatPrice(order.amount / 100),
-        paymentStatus: order.status,
-        date: moment(order.createdAt).fromNow(),
-        deliveryStatus: order.deliveryStatus,
-      };
-    });
-  }
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 220 },
     {
