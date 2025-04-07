@@ -8,19 +8,21 @@ export const products = [
     description: 'Short description',
     price: 2999,
     brand: 'Apple',
-    category: 'Phone',
+    category: 'smartphones',
     inStock: true,
     images: [
       {
         color: 'White',
         colorCode: '#FFFFFF',
-        image: 'https://m.media-amazon.com/images/I/71p-tHQ0u1L._AC_SX679_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/71p-tHQ0u1L._AC_SX679_.jpg',
         alt: 'iphone 14 - Image 0',
       },
       {
         color: 'Gray',
         colorCode: '#808080',
-        image: 'https://m.media-amazon.com/images/I/417tEj3iJ8L._AC_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/417tEj3iJ8L._AC_.jpg',
         alt: 'iphone 14 - Image 1',
       },
     ],
@@ -34,14 +36,15 @@ export const products = [
       'PERFECT STROKE KEYS - Spherically-dished keys match the shape of your fingertips, offering satisfying feedback with every tap\nCOMFORT AND STABILITY - Type with confidence on a keyboard crafted for comfort, stability, and precision',
     price: 102.99,
     brand: 'Logitech',
-    category: 'Accesories',
+    category: 'accessories',
     quantity: 1,
     inStock: true,
     images: [
       {
         color: 'Black',
         colorCode: '#000000',
-        image: 'https://m.media-amazon.com/images/I/71gOLg2-kqL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/71gOLg2-kqL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
         alt: 'Logitech MX Keys Advanced Wireless Illuminated Keyboard, Tactile Responsive Typing, Backlighting, Bluetooth, USB-C, Apple macOS, Microsoft Windows, Linux, iOS, Android, Metal Build (Black) - Image 0',
       },
     ],
@@ -58,7 +61,8 @@ export const products = [
           name: 'Charles',
           email: 'example@gmail.com',
           emailVerified: null,
-          image: 'https://lh3.googleusercontent.com/a/AAcHTteOiCtILLBWiAoolIW9PJH-r5825pBDl824_8LD=s96-c',
+          image:
+            'https://lh3.googleusercontent.com/a/AAcHTteOiCtILLBWiAoolIW9PJH-r5825pBDl824_8LD=s96-c',
           hashedPassword: null,
           createdAt: '2023-05-30T08:08:53.979Z',
           updatedAt: '2023-05-30T08:08:53.979Z',
@@ -74,26 +78,29 @@ export const products = [
       'The product is refurbished, fully functional, and in excellent condition. Backed by the 90-day E~Shop Renewed Guarantee.\n- This pre-owned product has been professionally inspected, tested and cleaned by Amazon qualified vendors. It is not certified by Apple.\n- This product is in "Excellent condition". The screen and body show no signs of cosmetic damage visible from 12 inches away.\n- This product will have a battery that exceeds 80% capacity relative to new.\n- Accessories may not be original, but will be compatible and fully functional. Product may come in generic box.\n- Product will come with a SIM removal tool, a charger and a charging cable. Headphone and SIM card are not included.\n- This product is eligible for a replacement or refund within 90-day of receipt if it does not work as expected.\n- Refurbished phones are not guaranteed to be waterproof.',
     price: 40,
     brand: 'Apple',
-    category: 'Phone',
+    category: 'smartphones',
     quantity: 1,
     inStock: true,
     images: [
       {
         color: 'Black',
         colorCode: '#000000',
-        image: 'https://m.media-amazon.com/images/I/61g+McQpg7L._AC_SX679_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/61g+McQpg7L._AC_SX679_.jpg',
         alt: 'Apple iPhone 13, 64GB - Image 0',
       },
       {
         color: 'Blue',
         colorCode: ' #0000FF',
-        image: 'https://m.media-amazon.com/images/I/713Om9vCHUL._AC_SX679_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/713Om9vCHUL._AC_SX679_.jpg',
         alt: 'Apple iPhone 13, 64GB - Image 1',
       },
       {
         color: 'Red',
         colorCode: '#FF0000',
-        image: 'https://m.media-amazon.com/images/I/61thdjmfHcL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/61thdjmfHcL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
         alt: 'Apple iPhone 13, 64GB - Image 2',
       },
     ],
@@ -103,14 +110,16 @@ export const products = [
         userId: '6499b184b0e9a8c8709821d3',
         productId: '648437b38c44d52b9542e340',
         rating: 4,
-        comment: 'good enough. I like the camera and casing. the delivery was fast too.',
+        comment:
+          'good enough. I like the camera and casing. the delivery was fast too.',
         createdDate: '2023-06-26T15:53:44.483Z',
         user: {
           id: '6499b184b0e9a8c8709821d3',
           name: 'Chaoo',
           email: 'example1@gmail.com',
           emailVerified: null,
-          image: 'https://lh3.googleusercontent.com/a/AAcHTtcuRLwWi1vPKaQOcJlUurlhRAIIq2LgYccE8p32=s96-c',
+          image:
+            'https://lh3.googleusercontent.com/a/AAcHTtcuRLwWi1vPKaQOcJlUurlhRAIIq2LgYccE8p32=s96-c',
           hashedPassword: null,
           createdAt: '2023-06-26T15:40:52.558Z',
           updatedAt: '2023-06-26T15:40:52.558Z',
@@ -129,7 +138,8 @@ export const products = [
           name: 'Charles',
           email: 'example@gmail.com',
           emailVerified: null,
-          image: 'https://lh3.googleusercontent.com/a/AAcHTteOiCtILLBWiAoolIW9PJH-r5825pBDl824_8LD=s96-c',
+          image:
+            'https://lh3.googleusercontent.com/a/AAcHTteOiCtILLBWiAoolIW9PJH-r5825pBDl824_8LD=s96-c',
           hashedPassword: null,
           createdAt: '2023-05-30T08:08:53.979Z',
           updatedAt: '2023-05-30T08:08:53.979Z',
@@ -147,13 +157,14 @@ export const products = [
     price: 70,
     quantity: 1,
     brand: 'logitech',
-    category: 'Accesories',
+    category: 'accessories',
     inStock: true,
     images: [
       {
         color: 'Graphite',
         colorCode: ' #383838',
-        image: 'https://m.media-amazon.com/images/I/61ni3t1ryQL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/61ni3t1ryQL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
         alt: 'Logitech MX Master 2S Wireless Mouse - Graphite - Image 0',
       },
     ],
@@ -168,19 +179,21 @@ export const products = [
     price: 50,
     brand: 'Nerunsa',
     quantity: 1,
-    category: 'Watch',
+    category: 'womens-watches',
     inStock: true,
     images: [
       {
         color: 'Black',
         colorCode: '#000000',
-        image: 'https://m.media-amazon.com/images/I/71s4mjiit3L.__AC_SX300_SY300_QL70_FMwebp_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/71s4mjiit3L.__AC_SX300_SY300_QL70_FMwebp_.jpg',
         alt: 'Nerunsa Smart Watch - Black - Image 0',
       },
       {
         color: 'Silver',
         colorCode: '#C0C0C0',
-        image: 'https://m.media-amazon.com/images/I/71zbWSRMaYL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
+        image:
+          'https://m.media-amazon.com/images/I/71zbWSRMaYL.__AC_SX300_SY300_QL70_FMwebp_.jpg',
         alt: 'Nerunsa Smart Watch - Silver - Image 1',
       },
     ],
@@ -193,7 +206,7 @@ export const products = [
     quantity: 1,
     price: 215,
     brand: 'Mango',
-    category: 'Clothes',
+    category: 'womens-dresses',
     inStock: true,
     images: [
       {
@@ -212,7 +225,7 @@ export const products = [
     description: 'Midi atlas Slim fit',
     price: 125,
     brand: 'Uniqlo',
-    category: 'Clothes',
+    category: 'womens-dresses',
     inStock: true,
     images: [
       {
@@ -231,7 +244,7 @@ export const products = [
     quantity: 1,
     price: 398,
     brand: 'Zara',
-    category: 'Clothes',
+    category: 'womens-dresses',
     inStock: true,
     images: [
       {
@@ -250,7 +263,7 @@ export const products = [
     price: 68,
     brand: 'Ralph Lauren',
     quantity: 1,
-    category: 'Clothes',
+    category: 'tops',
     inStock: true,
     images: [
       {
@@ -269,7 +282,7 @@ export const products = [
     price: 512,
     brand: 'Rachel Pally',
     quantity: 1,
-    category: 'Clothes',
+    category: 'womens-dresses',
     inStock: true,
     images: [
       {
@@ -287,7 +300,7 @@ export const products = [
     description: 'Shirt-oversize-Minimalist',
     price: 259,
     brand: 'Ralph Lauren',
-    category: 'Clothes',
+    category: 'tops',
     quantity: 1,
     inStock: true,
     images: [
@@ -306,7 +319,7 @@ export const products = [
     description: 'Printed Dress',
     price: 39.99,
     brand: 'Zara',
-    category: 'Clothes',
+    category: 'womens-dresses',
     quantity: 1,
     inStock: true,
     images: [
@@ -337,7 +350,7 @@ export const products = [
     description: 'Sweather - Black & White - Minimalist',
     price: 420,
     brand: 'Zara',
-    category: 'Clothes',
+    category: 'tops',
     inStock: true,
     quantity: 1,
     images: [
@@ -357,7 +370,7 @@ export const products = [
     price: 100,
     quantity: 1,
     brand: 'Uniqlo',
-    category: 'Clothes',
+    category: 'womens-dresses',
     inStock: true,
     images: [
       {
@@ -376,7 +389,7 @@ export const products = [
     quantity: 2,
     price: 69.99,
     brand: 'Tonny Black',
-    category: 'Asseccosires',
+    category: 'womens-bags',
     inStock: true,
     images: [
       {
@@ -394,7 +407,7 @@ export const products = [
     description: 'Shoulder bag-Pink-Plain',
     price: 69.99,
     brand: 'Patso',
-    category: 'Clothes',
+    category: 'womens-bags',
     quantity: 0,
     inStock: true,
     images: [
@@ -413,7 +426,7 @@ export const products = [
     description: "Women's Powder Sneaker",
     price: 112.02,
     brand: 'Reebok',
-    category: 'Clothes',
+    category: 'womens-shoes',
     quantity: 1,
     inStock: true,
     images: [
@@ -433,7 +446,7 @@ export const products = [
     price: 80,
     brand: 'Sketchers',
     quantity: 0,
-    category: 'Clothes',
+    category: 'womens-shoes',
     inStock: true,
     images: [
       {
@@ -451,7 +464,7 @@ export const products = [
     description: 'INSTAX Wide 300 Black',
     price: 82.99,
     brand: 'INSTAX',
-    category: 'Asseccories',
+    category: 'accessories',
     inStock: true,
     quantity: 0,
     images: [
@@ -470,7 +483,7 @@ export const products = [
     description: 'INSTAX Square SQ1 Chalk',
     price: 112.99,
     brand: 'INSTANX',
-    category: 'Asseccories',
+    category: 'accessories',
     quantity: 1,
     inStock: true,
     images: [
@@ -490,7 +503,7 @@ export const products = [
     price: 119.99,
     brand: 'Polaroid',
     quantity: 1,
-    category: 'Asseccories',
+    category: 'accessories',
     inStock: true,
     images: [
       {
@@ -508,7 +521,7 @@ export const products = [
     description: 'INSTAX Wide 300 Black',
     price: 109,
     brand: 'INSTAX',
-    category: 'Clothes',
+    category: 'accessories',
     quantity: 1,
     inStock: true,
     images: [

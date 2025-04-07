@@ -1,4 +1,5 @@
 export const revalidate = 0;
+
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import NullData from '../components/NullData';
 import Container from '../components/Container';

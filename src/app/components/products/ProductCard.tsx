@@ -22,7 +22,7 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({
     data?.reviews?.reduce(
       (total: number, review: any) => total + review.rating,
       0,
-    ) / data.reviews.length;
+    ) / data?.reviews?.length;
 
   return (
     <div
@@ -36,8 +36,8 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({
         <div className="aspect-square overflow-hidden relative w-full">
           <Image
             fill
-            src={data.images[0].image}
-            alt={data.title}
+            src={data?.images?.[0]?.image ?? null}
+            alt={data?.title}
             className="w-full h-full object-contain"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             loading="lazy"
@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({
 
         {data?.brand && (
           <div className="mt-4 font-bold">
-            {truncateText(data.brand)}
+            {truncateText(data?.brand)}
           </div>
         )}
         <div className="text-sm sm:text-[0.75rem]">
@@ -62,13 +62,13 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({
               sx={{ fontSize: '1.5rem' }}
               className="sm:text-[0.85rem]"
             />
-            {data.reviews.length > 1
-              ? `(${data.reviews.length})`
-              : `(${data.reviews.length})`}{' '}
+            {data?.reviews?.length > 1
+              ? `(${data?.reviews?.length})`
+              : `(${data?.reviews?.length})`}{' '}
           </div>
         </Suspense>
         <div className="font-semibold">
-          {formatPrice(data.price)}
+          {formatPrice(data?.price)}
         </div>
       </div>
     </div>
