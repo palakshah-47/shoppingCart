@@ -7,6 +7,7 @@ import CartCount from './CartCount';
 import UserMenu from './UserMenu';
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import Categories from './Categories';
+import { Suspense } from 'react';
 
 const redressed = Redressed({
   subsets: ['latin'],
@@ -39,7 +40,10 @@ const NavBar = async () => {
               <UserMenu currentUser={currentUser} />
             </div>
           </div>
-          <Categories />
+          <Suspense
+            fallback={<div>Loading Categories..</div>}>
+            <Categories />
+          </Suspense>
         </Container>
       </div>
     </div>
