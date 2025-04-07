@@ -1,3 +1,4 @@
+export const revalidate = 0;
 import Link from 'next/link';
 import Container from '../Container';
 import logo from '../../assets/images/Logo.png';
@@ -5,6 +6,8 @@ import { Redressed } from 'next/font/google';
 import CartCount from './CartCount';
 import UserMenu from './UserMenu';
 import { getCurrentUser } from '@/actions/getCurrentUser';
+import Categories from './Categories';
+import { Suspense } from 'react';
 
 const redressed = Redressed({
   subsets: ['latin'],
@@ -37,6 +40,10 @@ const NavBar = async () => {
               <UserMenu currentUser={currentUser} />
             </div>
           </div>
+          <Suspense
+            fallback={<div>Loading Categories..</div>}>
+            <Categories />
+          </Suspense>
         </Container>
       </div>
     </div>
