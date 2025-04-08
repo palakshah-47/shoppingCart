@@ -46,15 +46,10 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
     'Dummy Products length:',
     dummyProducts.length,
   );
-
   const shuffledProducts = getShuffledArray(
     hardCodedProducts,
     category,
   );
-  const combinedProducts = [
-    ...shuffledProducts,
-    ...dummyProducts,
-  ];
 
   return (
     <Container>
@@ -64,7 +59,8 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
           <Suspense fallback={<SkeletonCard />}>
             <LoadMoreProducts
               key={category}
-              initialProducts={combinedProducts}
+              initialProducts={dummyProducts}
+              hardCodedProducts={shuffledProducts}
               category={category}
             />
           </Suspense>

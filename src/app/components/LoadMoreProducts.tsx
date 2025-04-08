@@ -13,9 +13,11 @@ import NullData from './NullData';
 export const LoadMoreProducts = memo(
   ({
     initialProducts,
+    hardCodedProducts,
     category,
   }: {
     initialProducts: Product[];
+    hardCodedProducts: Product[];
     category: string;
   }) => {
     const {
@@ -24,13 +26,16 @@ export const LoadMoreProducts = memo(
       handleProductsVal,
       handleSkipVal,
     } = useProducts();
-
     const [products, setProducts] = useState<
       Product[] | undefined
     >(
       category === 'all'
-        ? [...initialProducts, ...(productsVal || [])]
-        : [...initialProducts],
+        ? [
+            ...hardCodedProducts,
+            ...initialProducts,
+            ...(productsVal || []),
+          ]
+        : [...hardCodedProducts, ...initialProducts],
     );
     const [skip, setSkip] = useState(skipVal);
     const [hasMore, setHasMore] = useState(true); // Track if more products exist
@@ -56,7 +61,7 @@ export const LoadMoreProducts = memo(
         setHasMore(false); // No more products to load
       } else {
         if (category !== 'all') {
-          setProducts([...data]);
+          setProducts([...hardCodedProducts, ...data]);
           setHasMore(false);
         } else {
           setProducts((prev: Product[] | undefined) => [
