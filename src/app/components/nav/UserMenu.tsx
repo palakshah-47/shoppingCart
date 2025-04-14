@@ -16,6 +16,8 @@ interface UserMenuProps {
 const UserMenu = ({ currentUser }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log('currentUser', currentUser);
+
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
@@ -44,11 +46,13 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
                     Your Orders
                   </MenuItem>
                 </Link>
-                {/* <Link href={'/admin'}>
-                  <MenuItem onClick={toggleOpen}>
-                    Admin Dashboard
-                  </MenuItem>
-                </Link> */}
+                {currentUser.role === 'ADMIN' && (
+                  <Link href={'/admin/manage-orders'}>
+                    <MenuItem onClick={toggleOpen}>
+                      Manage Orders
+                    </MenuItem>
+                  </Link>
+                )}
                 <hr />
                 <MenuItem
                   onClick={() => {

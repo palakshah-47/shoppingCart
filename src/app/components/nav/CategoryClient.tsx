@@ -5,9 +5,7 @@ import {
   useSearchParams,
 } from 'next/navigation';
 import React, {
-  useCallback,
-  useEffect,
-  useState,
+  useCallback, 
 } from 'react';
 import queryString from 'query-string';
 import { IconType } from 'react-icons';

@@ -206,7 +206,7 @@ export const products = [
     quantity: 1,
     price: 215,
     brand: 'Mango',
-    category: 'womens-dresses',
+    category: 'womens',
     inStock: true,
     images: [
       {
@@ -225,7 +225,7 @@ export const products = [
     description: 'Midi atlas Slim fit',
     price: 125,
     brand: 'Uniqlo',
-    category: 'womens-dresses',
+    category: 'womens',
     inStock: true,
     images: [
       {
@@ -244,7 +244,7 @@ export const products = [
     quantity: 1,
     price: 398,
     brand: 'Zara',
-    category: 'womens-dresses',
+    category: 'womens',
     inStock: true,
     images: [
       {
@@ -282,7 +282,7 @@ export const products = [
     price: 512,
     brand: 'Rachel Pally',
     quantity: 1,
-    category: 'womens-dresses',
+    category: 'womens',
     inStock: true,
     images: [
       {
@@ -319,7 +319,7 @@ export const products = [
     description: 'Printed Dress',
     price: 39.99,
     brand: 'Zara',
-    category: 'womens-dresses',
+    category: 'womens',
     quantity: 1,
     inStock: true,
     images: [
@@ -370,7 +370,7 @@ export const products = [
     price: 100,
     quantity: 1,
     brand: 'Uniqlo',
-    category: 'womens-dresses',
+    category: 'womens',
     inStock: true,
     images: [
       {
@@ -389,7 +389,7 @@ export const products = [
     quantity: 2,
     price: 69.99,
     brand: 'Tonny Black',
-    category: 'womens-bags',
+    category: 'womens',
     inStock: true,
     images: [
       {
@@ -407,7 +407,7 @@ export const products = [
     description: 'Shoulder bag-Pink-Plain',
     price: 69.99,
     brand: 'Patso',
-    category: 'womens-bags',
+    category: 'womens',
     quantity: 0,
     inStock: true,
     images: [
@@ -426,7 +426,7 @@ export const products = [
     description: "Women's Powder Sneaker",
     price: 112.02,
     brand: 'Reebok',
-    category: 'womens-shoes',
+    category: 'womens',
     quantity: 1,
     inStock: true,
     images: [
@@ -446,7 +446,7 @@ export const products = [
     price: 80,
     brand: 'Sketchers',
     quantity: 0,
-    category: 'womens-shoes',
+    category: 'womens',
     inStock: true,
     images: [
       {
