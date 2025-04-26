@@ -16,7 +16,6 @@ import { attachProductImages } from '@/app/utils/productHelper';
 import { useCart } from '@/hooks/useCart';
 import { MdCheckCircle, MdArrowBack } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 export const Horizontal = () => {
   return <hr className="w-[30%]"></hr>;
