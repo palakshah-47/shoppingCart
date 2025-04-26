@@ -4,6 +4,8 @@ import ListRating from './ListRating';
 import { products } from '../../../../const/products';
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import AddRating from './AddRating';
+import { getCurrentUser } from '@/actions/getCurrentUser';
 
 async function fetchProductFromAPI(productId: number) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -52,6 +54,8 @@ const ProductPage = async ({
     }
   }
 
+  const currentUser = await getCurrentUser();
+
   const ProductDetails = dynamic(
     () => import('./ProductDetails'),
   );
@@ -64,7 +68,10 @@ const ProductPage = async ({
           fallback={<div>Loading item...</div>}>
           {product && <ProductDetails product={product} />}
           <div className="flex flex-col mt-20 gap-4">
-            <div>Add Rating</div>
+            <AddRating
+              product={product}
+              user={currentUser}
+            />
             <ListRating product={product} />
           </div>
         </Suspense>
