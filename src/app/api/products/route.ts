@@ -5,8 +5,10 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category =
     searchParams.get('category') || undefined;
+  const query = searchParams.get('q') || undefined;
   const products = await fetchProductsByCategory({
-    category: category,
+    category: query !== '' ? undefined : category,
+    query: query,
   });
   if (!products) {
     return NextResponse.error();

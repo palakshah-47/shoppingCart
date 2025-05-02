@@ -5,14 +5,20 @@ import { attachProductImages } from '@/app/utils/productHelper';
 
 export const fetchProductsByCategory = async ({
   category,
+  query,
   limit,
   skip,
 }: {
   category?: string;
+  query?: string;
   limit?: number;
   skip?: number;
 }): Promise<Product[]> => {
-  console.log('inside fetchProductsByCategory', category);
+  console.log(
+    'inside fetchProductsByCategory',
+    category,
+    query,
+  );
   const categoryQuery = (): string | string[] => {
     if (category) {
       const categoryArr: string[] = [];
@@ -69,13 +75,15 @@ export const fetchProductsByCategory = async ({
   const categoryStr = categoryQuery();
 
   const url =
-    typeof categoryStr === 'string'
+    typeof categoryStr === 'string' && categoryStr !== ''
       ? categoryStr === 'all'
         ? `https://dummyjson.com/products?limit=${limit || 10}&skip=${skip || 0}`
         : categoryStr !== 'all'
           ? `https://dummyjson.com/products/category/${categoryQuery()}`
           : ''
-      : '';
+      : query && query !== ''
+        ? `https://dummyjson.com/products/search?q=${query}&limit=${limit || 10}`
+        : '';
 
   if (Array.isArray(categoryStr) && url === '') {
     const categoryArr = categoryStr as string[];
@@ -118,7 +126,9 @@ const transformedProducts = (products: Product[]) => {
 
 const fetchProductsFromApi = async (url: string) => {
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      cache: 'force-cache',
+    });
     if (!res.ok) {
       throw new Error('Failed to fetch products');
     }

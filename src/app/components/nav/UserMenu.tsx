@@ -16,8 +16,6 @@ interface UserMenuProps {
 const UserMenu = ({ currentUser }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log('currentUser', currentUser);
-
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);

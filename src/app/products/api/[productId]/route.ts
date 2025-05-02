@@ -1,5 +1,5 @@
-// app/api/product/[productId]/route.js
 import { NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 export async function GET(
   req: NextRequest,
@@ -8,9 +8,11 @@ export async function GET(
   const { productId } = await params;
   try {
     // Fetch data from the external API using the dynamic productId
-    const apiResponse = await fetch(
-      `https://dummyjson.com/products/${productId}`,
-    );
+    const apiResponse = await unstable_cache(
+      () => fetch(`https://dummyjson.com/products/${productId}`),
+      ['product', productId],
+      { tags: [`product-${productId}`], revalidate: 3600 }
+    )();
     if (!apiResponse.ok) {
       throw new Error('Failed to fetch product data');
     }

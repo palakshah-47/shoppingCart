@@ -53,22 +53,13 @@ export async function POST(request: Request) {
   return NextResponse.json(review, { status: 201 });
 }
 export async function GET(
-  request: NextRequest,
-  {
-    params,
-  }: {
-    params: { userId: string; productId: string };
-  },
+  request: NextRequest
 ) {
   const { searchParams } = new URL(request.url);
   const userId =
-    searchParams.get('userId') || params.userId;
+    searchParams.get('userId')
   const productId =
-    searchParams.get('productId') || params.productId;
-  // const values = params;
-  // const { userId, productId } = values;
-  console.log('userId:', userId);
-  console.log('productId:', productId);
+    searchParams.get('productId') 
   if (!userId || !productId) {
     return NextResponse.json(
       { error: 'Missing userId or productId' },

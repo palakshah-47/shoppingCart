@@ -20,11 +20,13 @@ interface AddRatingProps {
     reviews: Review[];
   };
   user: (SafeUser & { orders: Order[] }) | null;
+  existingReview?: Review | null;
 }
 
 const AddRating: React.FC<AddRatingProps> = ({
   product,
   user,
+  existingReview,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -61,13 +63,14 @@ const AddRating: React.FC<AddRatingProps> = ({
       product: product,
     };
 
+    // If no review exists, proceed to create a new one
     try {
-      const response = await axios.post(
+      const ratingResponse = await axios.post(
         '/api/rating',
         ratingData,
       );
-      if (response.status == 201) {
-        toast.success('Rating submitted!');
+      if (ratingResponse.status == 201) {
+        toast.success('Rating submitted!.');
         router.refresh();
         reset();
       }
@@ -84,7 +87,6 @@ const AddRating: React.FC<AddRatingProps> = ({
           'Failed to submit rating. Please try again later.',
         );
       }
-
       return;
     } finally {
       setIsLoading(false);
@@ -101,7 +103,7 @@ const AddRating: React.FC<AddRatingProps> = ({
       ),
   );
 
-  if (!deliveredOrder) return null;
+  if (existingReview || !deliveredOrder) return null;
 
   return (
     <div className="flex flex-col gap-2 max-w-[500px]">

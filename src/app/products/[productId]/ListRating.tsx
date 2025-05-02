@@ -12,11 +12,30 @@ import Avatar from '@/app/components/ui/Avatar';
 
 interface ListRatingProps {
   product: Product;
+  existingReview: Review | null;
 }
 
 const ListRating: React.FC<ListRatingProps> = ({
   product,
+  existingReview,
 }) => {
+  if (
+    existingReview !== null &&
+    product.reviews.filter(
+      (review) => review.id === existingReview.id,
+    ).length === 0
+  ) {
+    product.reviews = [...product.reviews, existingReview];
+  }
+
+  if (!product?.reviews || product.reviews.length === 0) {
+    return (
+      <div className="text-center mt-4">
+        <Heading title="No Reviews Yet" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Heading title="Product Review" />
