@@ -15,10 +15,12 @@ export const LoadMoreProducts = memo(
     initialProducts,
     hardCodedProducts,
     category,
+    query,
   }: {
     initialProducts: Product[];
     hardCodedProducts: Product[];
-    category: string;
+    category: string | null;
+    query: string | null;
   }) => {
     const {
       skipVal,
@@ -41,6 +43,9 @@ export const LoadMoreProducts = memo(
     const [hasMore, setHasMore] = useState(true); // Track if more products exist
     const [selectedCategory, setSelectedCategory] =
       useState<string | null>(null);
+    const [selectedQuery, setSelectedQuery] = useState<
+      string | null
+    >(null);
 
     const { ref, inView } = useInView({
       rootMargin: '100px',
@@ -48,19 +53,28 @@ export const LoadMoreProducts = memo(
     });
 
     const loadMoreProducts = async () => {
+      let data: Product[] = [];
       const next = skip === 10 ? skip + 30 : skip + 10;
-      const categoryVal = selectedCategory ?? category;
-      const data =
-        (await fetchProductsByCategory({
-          category: categoryVal,
-          limit: categoryVal === 'all' ? 10 : 0,
-          skip: categoryVal === 'all' ? next : 0,
-        })) ?? [];
-
+      if (query) {
+        data =
+          (await fetchProductsByCategory({
+            category: undefined,
+            query: selectedQuery ?? query,
+          })) ?? [];
+      } else if (category) {
+        const categoryVal =
+          selectedCategory ?? category ?? 'all';
+        data =
+          (await fetchProductsByCategory({
+            category: categoryVal,
+            limit: categoryVal === 'all' ? 10 : 0,
+            skip: categoryVal === 'all' ? next : 0,
+          })) ?? [];
+      }
       if (data.length === 0) {
         setHasMore(false); // No more products to load
       } else {
-        if (category !== 'all') {
+        if (query || category !== 'all') {
           setProducts([...hardCodedProducts, ...data]);
           setHasMore(false);
         } else {
@@ -82,11 +96,15 @@ export const LoadMoreProducts = memo(
     };
 
     useEffect(() => {
-      setSelectedCategory(category);
+      if (query) {
+        setSelectedQuery(query);
+      } else if (category) {
+        setSelectedCategory(category);
+      }
       if (inView) {
         loadMoreProducts();
       }
-    }, [inView, hasMore, category]);
+    }, [inView, hasMore, category, query]);
 
     if (products && products.length === 0) {
       return (

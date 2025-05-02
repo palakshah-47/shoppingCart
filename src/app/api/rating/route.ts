@@ -2,7 +2,7 @@ import { getCurrentUser } from '@/actions/getCurrentUser';
 import { Review } from '@/app/components/products/types';
 import prisma from '@/libs/prismadb';
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   const currentUser = await getCurrentUser();
@@ -23,9 +23,6 @@ export async function POST(request: Request) {
     ),
   );
 
-  //   const userReview = product?.reviews.find(
-  //     (review: Review) => review.userId === currentUser.id,
-  //   );
   const existingReview = await prisma.review.findUnique({
     where: {
       userId_productId: {
@@ -54,4 +51,34 @@ export async function POST(request: Request) {
     },
   });
   return NextResponse.json(review, { status: 201 });
+}
+export async function GET(
+  request: NextRequest
+) {
+  const { searchParams } = new URL(request.url);
+  const userId =
+    searchParams.get('userId')
+  const productId =
+    searchParams.get('productId') 
+  if (!userId || !productId) {
+    return NextResponse.json(
+      { error: 'Missing userId or productId' },
+      { status: 400 },
+    );
+  }
+
+  const review = await prisma.review.findUnique({
+    where: {
+      userId_productId: {
+        userId,
+        productId,
+      },
+    },
+  });
+
+  if (!review) {
+    return NextResponse.json(null);
+  }
+  console.log('Review found:', review);
+  return NextResponse.json(review, { status: 200 });
 }

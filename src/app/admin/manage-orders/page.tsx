@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import getOrders from '@/actions/getOrders';
 import ManageOrdersClient from './ManagerOrdersClient';
 import { getCurrentUser } from '@/actions/getCurrentUser';

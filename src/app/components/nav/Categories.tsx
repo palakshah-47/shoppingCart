@@ -17,8 +17,16 @@ const Categories = () => {
     useState('all');
 
   useEffect(() => {
-    const current = searchParams?.get('category') || 'all';
-    setSelectedCategory(current);
+     const query = searchParams?.get('q');
+     if (query) {
+       const params = new URLSearchParams(searchParams?.toString());
+       params.delete('q');
+       const current = params.get('category') || 'all';
+       setSelectedCategory(current);
+     } else {
+       const current = searchParams?.get('category') || 'all';
+       setSelectedCategory(current);
+     }
   }, [searchParams?.toString()]);
 
   const isMainPage =

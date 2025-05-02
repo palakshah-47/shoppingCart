@@ -1,11 +1,12 @@
+export const revalidate = 3600;
 import Container from '@/app/components/Container';
-// import ProductDetails from './ProductDetails';
 import ListRating from './ListRating';
 import { products } from '../../../../const/products';
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import AddRating from './AddRating';
 import { getCurrentUser } from '@/actions/getCurrentUser';
+import { Review } from '@prisma/client';
 
 async function fetchProductFromAPI(productId: number) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -21,6 +22,30 @@ async function fetchProductFromAPI(productId: number) {
   return await res.json();
 }
 
+async function fetchReviewForProduct(
+  productId: string,
+  userId: string | undefined,
+) {
+  if (!userId) return null;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  if (!apiUrl) return null;
+  try {
+    const reviewResponse = await fetch(
+      `${apiUrl}/api/rating?userId=${userId}&productId=${productId}`,
+    );
+
+    if (reviewResponse.ok) {
+      return await reviewResponse.json();
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error getting reviews:', error); // Log any errors
+    return null;
+  }
+}
+
 export interface ProductPageProps {
   params: Promise<{ productId: string }>;
 }
@@ -28,15 +53,13 @@ export interface ProductPageProps {
 const ProductPage = async ({
   params,
 }: ProductPageProps) => {
-  // const promise = params;
   const { productId } = await params;
-  // const productId = promise.productId;
-  // Check in hardcoded products first
   const hardcodedProduct = products.find(
     (p) => p.id === productId,
   );
 
   let product;
+  let existingReview: Review | null = null;
   if (hardcodedProduct) {
     product = hardcodedProduct;
   } else {
@@ -55,6 +78,37 @@ const ProductPage = async ({
   }
 
   const currentUser = await getCurrentUser();
+  existingReview = await fetchReviewForProduct(
+    product.id.toString(),
+    currentUser?.id,
+  );
+  const review = existingReview
+    ? {
+        ...existingReview,
+        id: existingReview?.id || '',
+        userId: existingReview?.userId || '',
+        productId: existingReview?.productId || '',
+        rating: existingReview?.rating || 0,
+        comment: existingReview?.comment || '',
+        user: {
+          id: currentUser?.id ?? '',
+          name: currentUser?.name ?? '',
+          email: currentUser?.email ?? '',
+          createdAt: currentUser?.createdAt ?? '',
+          updatedAt: currentUser?.updatedAt ?? '',
+          image: currentUser?.image ?? '',
+          emailVerified:
+            currentUser?.emailVerified === 'true'
+              ? true
+              : currentUser?.emailVerified === 'false'
+                ? false
+                : null,
+          hashedPassword:
+            currentUser?.hashedPassword ?? null,
+          role: currentUser?.role ?? undefined,
+        },
+      }
+    : null;
 
   const ProductDetails = dynamic(
     () => import('./ProductDetails'),
@@ -71,8 +125,12 @@ const ProductPage = async ({
             <AddRating
               product={product}
               user={currentUser}
+              existingReview={existingReview}
             />
-            <ListRating product={product} />
+            <ListRating
+              product={product}
+              existingReview={review}
+            />
           </div>
         </Suspense>
       </Container>

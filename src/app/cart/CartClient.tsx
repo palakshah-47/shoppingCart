@@ -89,12 +89,6 @@ const CartClient: React.FC<CartClientProps> = ({
             <MdArrowBack />
             <span>Continue Shopping</span>
           </Link>
-          {/* <button
-            onClick={router.back}
-            className="text-slate-500 flex items-center gap-1 mt-2">
-            <MdArrowBack />
-            <span>Continue Shopping</span>
-          </button> */}
         </div>
       </div>
     </div>

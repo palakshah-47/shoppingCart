@@ -8,6 +8,7 @@ import UserMenu from './UserMenu';
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import Categories from './Categories';
 import { Suspense } from 'react';
+import SearchBar from './SearchBar';
 
 const redressed = Redressed({
   subsets: ['latin'],
@@ -33,7 +34,10 @@ const NavBar = async () => {
             </Link>
 
             <div className="md:block sm:col-span-2">
-              Search
+              <Suspense
+                fallback={<div>Loading Search..</div>}>
+                <SearchBar />
+              </Suspense>
             </div>
             <div className="flex items-center gap-8 md:gap-12 sm:col-span-2 sm:gap-16">
               <CartCount />

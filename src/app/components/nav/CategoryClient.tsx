@@ -4,9 +4,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import React, {
-  useCallback, 
-} from 'react';
+import React from 'react';
 import queryString from 'query-string';
 import { IconType } from 'react-icons';
 
@@ -24,45 +22,14 @@ const Category: React.FC<CategoryProps> = ({
   const params = useSearchParams();
   const pathname = usePathname();
 
-  const handleClick = useCallback(
-    (categoryVal: string) => {
-      if (categoryVal === 'all') {
-        router.push('/');
-      } else {
-        let currentQuery = {};
-        if (params) {
-          currentQuery = queryString.parse(
-            params.toString(),
-          );
-        }
-        const updateQuery = {
-          ...currentQuery,
-          category: categoryVal === 'all' ? '' : label,
-        };
-
-        const url = queryString.stringifyUrl(
-          {
-            url: '/',
-            query: updateQuery,
-          },
-          {
-            skipNull: true,
-          },
-        );
-        console.log('url', url);
-        router.push(url);
-        router.refresh();
-      }
-    },
-    [label, params, router],
-  );
-
   const handleCategoryChange = (newCategory: string) => {
-    // const newCategory = e.target.value;
-
     const seacrhParams = new URLSearchParams(
       params ?? undefined,
     );
+    const query = seacrhParams?.get('q');
+    if (query) {
+      seacrhParams.delete('q');
+    }
     if (newCategory === 'all') {
       seacrhParams.delete('category');
     } else {
