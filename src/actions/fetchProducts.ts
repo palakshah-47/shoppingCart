@@ -64,22 +64,21 @@ export const fetchProductsByCategory = async ({
           break;
         }
       }
+
       return categoryArr.length > 0
         ? categoryArr
         : category;
     }
     return '';
   };
-
-  console.log('categoryQuery', categoryQuery());
   const categoryStr = categoryQuery();
-
+  console.log('categoryArr', categoryStr);
   const url =
     typeof categoryStr === 'string' && categoryStr !== ''
       ? categoryStr === 'all'
         ? `https://dummyjson.com/products?limit=${limit || 10}&skip=${skip || 0}`
         : categoryStr !== 'all'
-          ? `https://dummyjson.com/products/category/${categoryQuery()}`
+          ? `https://dummyjson.com/products/category/${categoryStr}`
           : ''
       : query && query !== ''
         ? `https://dummyjson.com/products/search?q=${query}&limit=${limit || 10}`
@@ -89,17 +88,10 @@ export const fetchProductsByCategory = async ({
     const categoryArr = categoryStr as string[];
     const products = await Promise.all(
       categoryArr.map(async (category) => {
-        console.log(
-          'category in fetchProductsByCategory',
-          category,
-        );
         const categoryUrl = `https://dummyjson.com/products/category/${category}`;
         const data =
           await fetchProductsFromApi(categoryUrl);
-        console.log(
-          'data in fetchProductsByCategory',
-          data,
-        );
+
         return data;
       }),
     );
@@ -127,7 +119,7 @@ const transformedProducts = (products: Product[]) => {
 const fetchProductsFromApi = async (url: string) => {
   try {
     const res = await fetch(url, {
-      cache: 'force-cache',
+      cache: 'no-store',
     });
     if (!res.ok) {
       throw new Error('Failed to fetch products');
