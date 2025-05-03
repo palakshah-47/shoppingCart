@@ -13,7 +13,7 @@ async function fetchProductsWithCategory(category: string) {
   const res = await fetch(
     `${apiUrl}/api/products?category=${category}`,
     {
-      cache: 'force-cache',
+      cache: 'no-store',
     },
   );
 
@@ -31,7 +31,7 @@ async function fetchProductsWithSearch(query: string) {
   const res = await fetch(
     `${apiUrl}/api/products?q=${query}`,
     {
-      cache: 'force-cache',
+      cache: 'no-store',
     },
   );
 
@@ -64,11 +64,7 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
       ? resolvedSearchParams.q
       : null;
   console.log('Category:', category);
-  console.log('Query:', query);
-  //  const category =
-  //   categoryOrQuery === 'all' ? 'all' : categoryOrQuery;
-  // const query =
-  //   categoryOrQuery !== 'all' ? categoryOrQuery : '';
+  console.log('Query:', query);  
   const initialProducts = query
     ? await fetchProductsWithSearch(query)
     : await fetchProductsWithCategory(category);
