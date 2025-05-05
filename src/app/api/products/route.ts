@@ -5,9 +5,9 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const category =
     searchParams.get('category') ?? undefined;
-  console.log('category in route', category);
+
   const query = searchParams.get('q') ?? undefined;
-  console.log('query in route', query);
+
   if (!category) {
     return NextResponse.json(
       { error: 'Missing category' },
@@ -21,6 +21,6 @@ export async function GET(request: NextRequest) {
   if (!products) {
     return NextResponse.error();
   }
-  console.log('Products length:', products.length);
+
   return NextResponse.json(products);
 }

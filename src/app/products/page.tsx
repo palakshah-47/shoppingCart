@@ -10,25 +10,7 @@ import { fetchProductsByCategory } from '@/actions/fetchProducts';
 import { NextResponse } from 'next/server';
 
 async function fetchProductsWithCategory(category: string) {
-   console.log(
-     'Fetching products with category:',
-     category,
-   );
-  // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  // if (!apiUrl) return null;
-  // const res = await fetch(
-  //   `${apiUrl}/api/products?category=${category}`,
-  //   {
-  //     cache: 'no-store',
-  //   },
-  // );
-
-  // if (!res.ok) {
-  //   throw new Error(
-  //     `Product not found in API. Status: ${res.status} ${res.statusText}`,
-  //   );
-  // }
-  // return await res.json();
+  console.log('Fetching products with category:', category);
 
   const products = await fetchProductsByCategory({
     category: category,
@@ -37,37 +19,22 @@ async function fetchProductsWithCategory(category: string) {
   if (!products) {
     return NextResponse.error();
   }
-  console.log('Products length:', products.length);
   return NextResponse.json(products);
 }
 
 async function fetchProductsWithSearch(query: string) {
-  console.log('Fetching products with search query:', query);
-  // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  // if (!apiUrl) return null;
-  // const res = await fetch(
-  //   `${apiUrl}/api/products?q=${query}`,
-  //   {
-  //     cache: 'no-store',
-  //   },
-  // );
-
-  // if (!res.ok) {
-  //   throw new Error(
-  //     `Product not found in API. Status: ${res.status} ${res.statusText}`,
-  //   );
-  // }
-  // return await res.json();
-
+  console.log(
+    'Fetching products with search query:',
+    query,
+  );
   const products = await fetchProductsByCategory({
-      category: undefined,
-      query: query,
-    });
-    if (!products) {
-      return NextResponse.error();
-    }
-    console.log('Products length:', products.length);
-    return NextResponse.json(products);
+    category: undefined,
+    query: query,
+  });
+  if (!products) {
+    return NextResponse.error();
+  }
+  return NextResponse.json(products);
 }
 
 interface ProductsPageProps {
@@ -91,12 +58,13 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
       ? resolvedSearchParams.q
       : null;
   console.log('Category:', category);
-  console.log('Query:', query);  
+  console.log('Query:', query);
   const initialProductsResponse = query
     ? await fetchProductsWithSearch(query)
     : await fetchProductsWithCategory(category);
 
-  const initialProducts = await initialProductsResponse.json();
+  const initialProducts =
+    await initialProductsResponse.json();
 
   console.log(
     'Initial Products length:',
@@ -117,7 +85,6 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
             fallback={<SkeletonCard />}
             key={query ?? category}>
             <LoadMoreProducts
-              // key={query ?? category}
               initialProducts={initialProducts}
               hardCodedProducts={shuffledProducts}
               category={query ? null : category}
