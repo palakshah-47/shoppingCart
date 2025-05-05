@@ -6,41 +6,68 @@ import { getShuffledArray } from '../utils/getShuffledArray';
 import { products as hardCodedProducts } from '../../../const/products';
 import Container from '../components/Container';
 import { TopBanner } from '../components/TopBanner';
+import { fetchProductsByCategory } from '@/actions/fetchProducts';
+import { NextResponse } from 'next/server';
 
 async function fetchProductsWithCategory(category: string) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) return null;
-  const res = await fetch(
-    `${apiUrl}/api/products?category=${category}`,
-    {
-      cache: 'no-store',
-    },
-  );
+   console.log(
+     'Fetching products with category:',
+     category,
+   );
+  // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // if (!apiUrl) return null;
+  // const res = await fetch(
+  //   `${apiUrl}/api/products?category=${category}`,
+  //   {
+  //     cache: 'no-store',
+  //   },
+  // );
 
-  if (!res.ok) {
-    throw new Error(
-      `Product not found in API. Status: ${res.status} ${res.statusText}`,
-    );
+  // if (!res.ok) {
+  //   throw new Error(
+  //     `Product not found in API. Status: ${res.status} ${res.statusText}`,
+  //   );
+  // }
+  // return await res.json();
+
+  const products = await fetchProductsByCategory({
+    category: category,
+    query: undefined,
+  });
+  if (!products) {
+    return NextResponse.error();
   }
-  return await res.json();
+  console.log('Products length:', products.length);
+  return NextResponse.json(products);
 }
 
 async function fetchProductsWithSearch(query: string) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) return null;
-  const res = await fetch(
-    `${apiUrl}/api/products?q=${query}`,
-    {
-      cache: 'no-store',
-    },
-  );
+  console.log('Fetching products with search query:', query);
+  // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // if (!apiUrl) return null;
+  // const res = await fetch(
+  //   `${apiUrl}/api/products?q=${query}`,
+  //   {
+  //     cache: 'no-store',
+  //   },
+  // );
 
-  if (!res.ok) {
-    throw new Error(
-      `Product not found in API. Status: ${res.status} ${res.statusText}`,
-    );
-  }
-  return await res.json();
+  // if (!res.ok) {
+  //   throw new Error(
+  //     `Product not found in API. Status: ${res.status} ${res.statusText}`,
+  //   );
+  // }
+  // return await res.json();
+
+  const products = await fetchProductsByCategory({
+      category: undefined,
+      query: query,
+    });
+    if (!products) {
+      return NextResponse.error();
+    }
+    console.log('Products length:', products.length);
+    return NextResponse.json(products);
 }
 
 interface ProductsPageProps {
@@ -65,9 +92,11 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
       : null;
   console.log('Category:', category);
   console.log('Query:', query);  
-  const initialProducts = query
+  const initialProductsResponse = query
     ? await fetchProductsWithSearch(query)
     : await fetchProductsWithCategory(category);
+
+  const initialProducts = await initialProductsResponse.json();
 
   console.log(
     'Initial Products length:',
