@@ -72,7 +72,7 @@ export const fetchProductsByCategory = async ({
     return '';
   };
   const categoryStr = categoryQuery();
-  console.log('categoryArr', categoryStr);
+  console.log('categoryStr', categoryStr);
   const url =
     typeof categoryStr === 'string' && categoryStr !== ''
       ? categoryStr === 'all'
