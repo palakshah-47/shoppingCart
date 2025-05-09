@@ -76,8 +76,8 @@ const Categories = () => {
           </div>
         </div>
         <div
-          className="pt-4 grid grid-cols-3 lg:grid lg:grid-cols-7 items-center justify-between
-         md:grid md:grid-cols-5 sm:hidden gap-4 md:gap-8 lg:gap-8">
+          className="pt-4 grid grid-cols-3 lg:grid lg:grid-cols-11 items-center justify-between
+         md:grid md:grid-cols-5 sm:hidden gap-4 md:gap-8 lg:gap-0 lg:ml-[-4rem]">
           {desiredCategories.map((item) => (
             <CategoryClient
               key={item.label}
