@@ -2,14 +2,16 @@ interface ContainerProps {
   children: React.ReactNode;
 }
 
-const Container: React.FC<ContainerProps> = ({ children }) => {
+const Container: React.FC<ContainerProps> = ({
+  children,
+}) => {
   return (
     <div
       className="
   max-w-[1920px]
-  min-w-[360px]
-  md:min-w-[200px]
-  sm:min-w-[200px]
+  min-w-[460px]
+  md:min-w-[760px]
+  sm:min-w-[460px]
   pl-8 pr-8  
   ">
       {children}

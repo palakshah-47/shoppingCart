@@ -8,11 +8,27 @@ interface AvatarProps {
   width?: number | undefined;
 }
 
-const Avatar: React.FC<AvatarProps> = ({ src, height = 30, width = 30 }) => {
+const Avatar: React.FC<AvatarProps> = ({
+  src,
+  height = 30,
+  width = 30,
+}) => {
   if (src) {
-    return <Image src={src} alt="Avatar" className="rounded-full" height={`${height}`} width={`${width}`} />;
+    return (
+      <Image
+        src={src}
+        alt="Avatar"
+        className="rounded-full"
+        height={height}
+        width={width}
+      />
+    );
   }
-  return <FaUserCircle style={{ height: `${height}`, width: `${width}` }} />;
+  return (
+    <FaUserCircle
+      style={{ height: `${height}`, width: `${width}` }}
+    />
+  );
 };
 
 export default Avatar;

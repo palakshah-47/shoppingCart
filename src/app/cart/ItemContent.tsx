@@ -1,7 +1,7 @@
 import React from 'react';
 import { CartProductType } from '../products/[productId]/ProductDetails'; //-
 import { formatPrice } from '../utils/formatPrice';
-import Link from 'next/link'; //-
+import Link from 'next/link';
 import { truncateText } from '../utils/truncateText';
 import Image from 'next/image';
 import { SetQuantity } from '../components/products/SetQuantity';

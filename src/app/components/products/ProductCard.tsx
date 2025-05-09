@@ -54,13 +54,13 @@ const ProductCard: React.FC<ProductCardProps<Product>> = ({
         </div>
 
         <Suspense fallback={<div>Loading...</div>}>
-          <div className="flex flex-row gap-1 sm:text-[0.85rem]">
+          <div className="flex flex-row gap-1 sm:hidden">
             <Rating
               value={Math.floor(rating)}
               readOnly
               size="medium"
               sx={{ fontSize: '1.5rem' }}
-              className="sm:text-[0.85rem]"
+              className="sm:hidden"
             />
             {data?.reviews?.length > 1
               ? `(${data?.reviews?.length})`

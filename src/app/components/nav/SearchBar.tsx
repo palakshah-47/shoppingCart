@@ -55,14 +55,14 @@ const SearchBar = () => {
   if (!isMainPage) return null;
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center w-40 md:w-80 sm:w-40">
       <input
         {...register('searchTerm')}
         autoComplete="off"
         type="text"
         placeholder="Explore E~shop"
         className="p-2 border border-gray-300 focus:outline-none focus:border-[0.5px] focus:border-slate-500
-    w-80"></input>
+    w-40 md:w-80 sm:w-40"></input>
       <button
         className="p-2 bg-slate-700 text-white rounded-r-md hover:opacity-80"
         onClick={handleSubmit(onSubmit)}>

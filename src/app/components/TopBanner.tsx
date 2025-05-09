@@ -22,10 +22,10 @@ export const TopBanner = () => {
           <h1 className="main-text">
             SMOCKS, ROBES & WRAPS
           </h1>
-          <p className=" text-gray-800 text-xl md:text-[1.4rem] mb-2">
+          <p className=" text-gray-800 text-xl lg:text-[1.4rem] md:text-[1.25rem] sm:text-[1.12rem] mb-2">
             Poolside glam included From $4.99
           </p>
-          <p className="text-gray-800 text-xl mb-2">
+          <p className="text-gray-800 text-xl lg:text-[1.4rem] md:text-[1.20rem] mb-2 sm:text-[1rem]">
             Enjoy discount on Summer Essentials
           </p>
           <p className="font-bold text-yellow-400 text-xl mb-2">
