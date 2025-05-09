@@ -70,10 +70,10 @@ const Category: React.FC<CategoryProps> = ({
   return (
     <div
       onClick={() => handleCategoryChange(label)}
-      className={`flex items-center justify-center text-center gap-1 p-2 border-b-2 hover:text-slate-800 transition
-    cursor-pointer ${selected ? 'border-b-slate-800 text-slate-800' : 'border-transparent text-slate-500'}`}>
+      className={`flex items-center justify-center text-center gap-1 p-2 border-b-2 sm:border-transparent hover:text-slate-800 transition
+    cursor-pointer ${selected ? 'border-b-slate-800 text-slate-800' : 'border-transparent text-slate-500 sm:border-transparent'}`}>
       <Icon size={20} />
-      <div className="font-medium text-sm">
+      <div className="font-medium text-sm sm:font-thin sm:text-xs">
         {label.charAt(0).toUpperCase() + label.slice(1)}
       </div>
     </div>

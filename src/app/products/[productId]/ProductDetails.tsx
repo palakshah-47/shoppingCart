@@ -146,7 +146,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         handleColorSelect={handleColorSelect}
       />
       <div className="text-slate-500 text-sm">
-        <h2 className="text-3xl font-medium text-slate-700">
+        <h2 className="text-3xl sm:text-xl font-medium text-slate-700">
           {product?.title}
         </h2>
         <div className="flex items-center gap-2">

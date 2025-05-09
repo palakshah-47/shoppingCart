@@ -25,7 +25,8 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
         <div
           onClick={toggleOpen}
           className="p-2 border-[1px] border-slate-400
-        flex flex-row items-center gap-2 rounded-full cursor-pointer hover:shadow-md transition text-slate-700">
+        flex flex-row items-center gap-2 rounded-full cursor-pointer hover:shadow-md transition text-slate-700
+        sm:w-12 sm:gap-1 sm:border-[0.5px]">
           <Avatar
             height={25}
             width={25}
