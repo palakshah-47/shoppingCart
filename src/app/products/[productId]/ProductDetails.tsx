@@ -40,8 +40,8 @@ export type CartProductType = {
 };
 
 export type SelectedImgType = {
-  color?: string;
-  colorCode?: string;
+  color?: string | null;
+  colorCode?: string | null;
   image: string;
   alt: string;
 };
