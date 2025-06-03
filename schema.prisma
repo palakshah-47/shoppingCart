@@ -14,8 +14,8 @@ model User {
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime?  @default(now())
+  updatedAt      DateTime?  @updatedAt
 
   accounts      Account[]
   orders        Order[]
@@ -88,7 +88,7 @@ model Review {
   productId String   
   rating    Int
   comment   String?
-  createdAt DateTime @default(now())
+  createdAt DateTime? @default(now())
 
   // product Product @relation(fields: [productId], references: [id])
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -96,19 +96,18 @@ model Review {
 }
 
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
+  id         String @id @default(uuid()) @map("_id")
+  title        String
   description String
   category    String
   brand       String?
   price       Float
   stock       Int?
- 
+  inStock     Boolean?
+  quantity   Int?
   images      Image[] 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // reviews Review[]
+  availabilityStatus String?  
+  reviews ProductReview[]
 }
 
 type CartProductType {
@@ -137,4 +136,29 @@ type Adress {
   postal_code String
   line1       String
   line2       String?
+}
+
+type ProductReview {
+  id String
+  userId String
+  productId String
+  rating Int
+  comment String?
+  createdDate DateTime? @default(now())
+  date   DateTime? @default(now())
+  reviewerName String?
+  reviewerEmail String?
+  user ProductUser
+}
+
+type ProductUser {
+    id String
+    name String
+    email String
+    emailVerified Boolean?
+    image String?
+    hashedPassword String?
+    createdAt DateTime? @default(now())
+    updatedAt DateTime? @default(now())
+    role String  
 }

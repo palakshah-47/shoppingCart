@@ -6,13 +6,14 @@ import { getShuffledArray } from '../utils/getShuffledArray';
 import { products as hardCodedProducts } from '../../../const/products';
 import Container from '../components/Container';
 import { TopBanner } from '../components/TopBanner';
-import { fetchProductsByCategory } from '@/actions/fetchProducts';
+import { getProducts } from '@/actions/fetchProducts';
 import { NextResponse } from 'next/server';
+import { FullProduct } from '../components/products/types';
+
 
 async function fetchProductsWithCategory(category: string) {
   console.log('Fetching products with category:', category);
-
-  const products = await fetchProductsByCategory({
+  const products = await getProducts({
     category: category,
     query: undefined,
   });
@@ -27,7 +28,8 @@ async function fetchProductsWithSearch(query: string) {
     'Fetching products with search query:',
     query,
   );
-  const products = await fetchProductsByCategory({
+
+  const products = await getProducts({
     category: undefined,
     query: query,
   });
@@ -57,21 +59,37 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
     resolvedSearchParams && 'q' in resolvedSearchParams
       ? resolvedSearchParams.q
       : null;
-  console.log('Category:', category);
-  console.log('Query:', query);
+
   const initialProductsResponse = query
     ? await fetchProductsWithSearch(query)
     : await fetchProductsWithCategory(category);
 
-  const initialProducts =
+  const initialProducts: FullProduct[] =
     await initialProductsResponse.json();
 
   console.log(
     'Initial Products length:',
     initialProducts.length,
   );
+
+  const productsWithDateObjects = hardCodedProducts.map(
+    (product) => ({
+      ...product,
+      reviews: product.reviews.map((review) => ({
+        ...review,
+        user: {
+          ...review.user,
+          createdAt: new Date(review.user.createdAt),
+          updatedAt: new Date(review.user.updatedAt),
+        },
+        rating: review.rating,
+        createdDate: new Date(review.createdDate),
+      })),
+    }),
+  );
+
   const shuffledProducts = getShuffledArray(
-    hardCodedProducts,
+    productsWithDateObjects,
     query && query !== '' ? undefined : category,
     query ?? undefined,
   );

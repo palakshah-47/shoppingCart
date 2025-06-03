@@ -1,8 +1,8 @@
 'use client';
 import { memo, useEffect, useState } from 'react';
-import { Product } from './products/types';
+import { Product, FullProduct } from './products/types';
 
-import { fetchProductsByCategory } from '@/actions/fetchProducts';
+import { getProducts } from '@/actions/fetchProducts';
 import { useInView } from 'react-intersection-observer';
 import SkeletonCard from './ui/SkeletonCard';
 import ProductCard from './products/ProductCard';
@@ -17,7 +17,7 @@ export const LoadMoreProducts = memo(
     category,
     query,
   }: {
-    initialProducts: Product[];
+    initialProducts: FullProduct[];
     hardCodedProducts: Product[];
     category: string | null;
     query: string | null;
@@ -28,16 +28,32 @@ export const LoadMoreProducts = memo(
       handleProductsVal,
       handleSkipVal,
     } = useProducts();
+
     const [products, setProducts] = useState<
-      Product[] | undefined
+      Product[] | FullProduct[]
     >(
       category === 'all'
         ? [
             ...hardCodedProducts,
-            ...initialProducts,
+            ...initialProducts?.map((p) => ({
+              ...p,
+              images: p?.images?.map((img) => ({
+                ...img,
+                color: img.color ?? null,
+              })),
+            })),
             ...(productsVal || []),
           ]
-        : [...hardCodedProducts, ...initialProducts],
+        : [
+            ...hardCodedProducts,
+            ...initialProducts?.map((p) => ({
+              ...p,
+              images: p?.images?.map((img) => ({
+                ...img,
+                color: img.color ?? null,
+              })),
+            })),
+          ],
     );
     const [skip, setSkip] = useState(skipVal);
     const [hasMore, setHasMore] = useState(true); // Track if more products exist
@@ -53,11 +69,11 @@ export const LoadMoreProducts = memo(
     });
 
     const loadMoreProducts = async () => {
-      let data: Product[] = [];
+      let data: any = [];
       const next = skip === 10 ? skip + 30 : skip + 10;
       if (query) {
         data =
-          (await fetchProductsByCategory({
+          (await getProducts({
             category: undefined,
             query: selectedQuery ?? query,
           })) ?? [];
@@ -65,7 +81,7 @@ export const LoadMoreProducts = memo(
         const categoryVal =
           selectedCategory ?? category ?? 'all';
         data =
-          (await fetchProductsByCategory({
+          (await getProducts({
             category: categoryVal,
             limit: categoryVal === 'all' ? 10 : 0,
             skip: categoryVal === 'all' ? next : 0,
@@ -114,17 +130,19 @@ export const LoadMoreProducts = memo(
 
     return (
       <>
-        {products?.map((product: Product, index) => (
-          <Link
-            href={`/products/${product.id}`}
-            key={`product-${index}-${product?.id}`}
-            scroll={true}>
-            <ProductCard
+        {products?.map(
+          (product: Product | FullProduct, index: any) => (
+            <Link
+              href={`/products/${product.id}`}
               key={`product-${index}-${product?.id}`}
-              data={product}
-            />
-          </Link>
-        ))}
+              scroll={true}>
+              <ProductCard
+                key={`product-${index}-${product?.id}`}
+                data={product}
+              />
+            </Link>
+          ),
+        )}
         {hasMore && <SkeletonCard ref={ref} />}
       </>
     );

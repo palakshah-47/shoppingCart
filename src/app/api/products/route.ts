@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchProductsByCategory } from '@/actions/fetchProducts';
+import { getProducts } from '@/actions/fetchProducts';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       { status: 400 },
     );
   }
-  const products = await fetchProductsByCategory({
+  const products = await getProducts({
     category: query && query !== '' ? undefined : category,
     query: category && category !== '' ? query : undefined,
   });

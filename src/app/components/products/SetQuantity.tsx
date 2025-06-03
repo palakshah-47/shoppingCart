@@ -9,7 +9,8 @@ interface SetQtyProps {
   handleQtyDecrease?: () => void;
 }
 
-const btnStyle = 'border-[1.2px] border-slate-300 px-2 ronded';
+const btnStyle =
+  'border-[1.2px] border-slate-300 px-2 ronded';
 
 export const SetQuantity: React.FC<SetQtyProps> = ({
   isQtyLabelNeeded,
@@ -17,18 +18,27 @@ export const SetQuantity: React.FC<SetQtyProps> = ({
   handleQtyIncrease,
   handleQtyDecrease,
 }) => {
+  console.log('cartProduct', cartProduct);
   return (
     <div className="flex gap-8 items-center pt-3 pb-3">
-      {isQtyLabelNeeded ? <span className="font-semibold">QUANTITY:</span> : null}
+      {isQtyLabelNeeded ? (
+        <span className="font-semibold">QUANTITY:</span>
+      ) : null}
       <div className="flex gap-4 items-center text-base">
         <button
           onClick={handleQtyDecrease}
-          disabled={!cartProduct?.quantity || cartProduct?.quantity === 1}
+          disabled={!cartProduct?.quantity}
           className={btnStyle}>
           -
         </button>
-        <div>{cartProduct?.quantity ?? 1}</div>
-        <button onClick={handleQtyIncrease} className={btnStyle}>
+        <div>
+          {cartProduct && cartProduct?.quantity !== 0
+            ? cartProduct.quantity
+            : 1}
+        </div>
+        <button
+          onClick={handleQtyIncrease}
+          className={btnStyle}>
           +
         </button>
       </div>
