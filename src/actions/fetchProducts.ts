@@ -182,8 +182,8 @@ export const getProducts = async (
         console.log(
           'cache Key',
           searchString
-            ? `products:${category}:${searchString}`
-            : `products:${category}`,
+            ? `products:${searchString}`
+            : `products:${categoryStr}`,
         );
         const products =
           (result as any).cursor?.firstBatch || [];
@@ -199,8 +199,8 @@ export const getProducts = async (
     },
     [
       searchString
-        ? `products:${category}:${searchString}`
-        : `products:${category}`,
+        ? `products:${searchString}`
+        : `products:${categoryStr}`,
     ],
     {
       revalidate: 600, // Optional: Revalidate cache every 10 mins
