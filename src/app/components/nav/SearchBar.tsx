@@ -63,11 +63,11 @@ const SearchBar = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto relative">
+      className="w-40 md:w-80 sm:w-40 mx-auto relative">
       <div
         className="flex items-center gap-2 rounded-xl bg-white border-2
       border-black/10 focus-within:border-blue-500/50 transition-all duration-300">
-        <div className="flex items-center w-40 md:w-80 sm:w-40">
+        <div className="flex items-center w-40 md:w-80 sm:w-40 pl-2">
           <input
             type="text"
             ref={searchInputRef}
