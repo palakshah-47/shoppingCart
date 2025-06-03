@@ -48,7 +48,8 @@ const ListRating: React.FC<ListRatingProps> = ({
               <div className="flex gap-2 items-center">
                 <Avatar src={review?.user?.image} />
                 <div className="font-semibold">
-                  {review?.user?.name}
+                  {review?.user?.name ||
+                    review?.reviewerName}
                 </div>
                 <div className="font-light">
                   {moment(

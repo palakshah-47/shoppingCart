@@ -3,10 +3,8 @@ import {
   FaLaptop,
   FaTshirt,
   FaMobileAlt,
-  
   FaSprayCan,
   FaMobile,
- 
   FaSun,
   FaTabletAlt,
   FaCar,
@@ -14,6 +12,13 @@ import {
 } from 'react-icons/fa';
 import { GiLipstick, GiSofa } from 'react-icons/gi';
 import { IconType } from 'react-icons';
+
+type Image = {
+  color?: string | null;
+  colorCode?: string | null;
+  image: string;
+  alt: string;
+};
 
 export const product = {
   id: '648437b38c44d52b9542e340',
@@ -91,12 +96,14 @@ export const product = {
 };
 
 export const attachProductImages = (
-  images: string[],
+  images: Image[],
   productTitle: string,
 ) => {
-  return images.map((image: string, index: number) => ({
-    image: image,
+  return images.map((image: Image, index: number) => ({
+    image: image.image,
     alt: `${productTitle} - Image ${index + 1}`,
+    color: image.color || null,
+    colorCode: image.colorCode || null,
   }));
 };
 

@@ -1,4 +1,4 @@
-import { Product } from '@/app/components/products/types';
+import { FullProduct, Product } from '@/app/components/products/types';
 import {
   createContext,
   useCallback,
@@ -8,7 +8,7 @@ import {
 
 type ProductContextType = {
   skipVal: number;
-  productsVal: Product[] | null;
+  productsVal: Product[] | FullProduct[] | null;
   handleSkipVal: (skip: number) => void;
   handleProductsVal: (products: Product[]) => void;
 };

@@ -1,7 +1,7 @@
 'use client';
 import { useCart } from '@/hooks/useCart';
 import Link from 'next/link';
-import React from 'react';
+import React, { useTransition } from 'react';
 import { MdArrowBack } from 'react-icons/md';
 import Heading from '../components/Heading';
 import { Button } from '../components/ui/Button';
@@ -20,6 +20,7 @@ const CartClient: React.FC<CartClientProps> = ({
     useCart();
 
   const router = useRouter();
+  let [isPending, startTransition] = useTransition();
 
   if (!cartProducts || cartProducts.length === 0) {
     return (
@@ -58,7 +59,7 @@ const CartClient: React.FC<CartClientProps> = ({
           <Button
             label="Clear Cart"
             onClick={() => {
-              handleClearCart();
+              startTransition(() => handleClearCart());
             }}
             small
             outline></Button>

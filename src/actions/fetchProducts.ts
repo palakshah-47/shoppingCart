@@ -2,110 +2,67 @@
 
 import { Product } from '@/app/components/products/types';
 import { attachProductImages } from '@/app/utils/productHelper';
+import prisma from '@/libs/prismadb';
+import { unstable_cache } from 'next/cache';
 
-export const fetchProductsByCategory = async ({
-  category,
-  query,
-  limit,
-  skip,
-}: {
-  category?: string;
-  query?: string;
-  limit?: number;
-  skip?: number;
-}): Promise<Product[]> => {
-  console.log(
-    'inside fetchProductsByCategory',
-    category,
-    query,
-  );
-  const categoryQuery = (): string | string[] => {
-    if (category) {
-      const categoryArr: string[] = [];
-      switch (category) {
-        case 'accessories': {
-          categoryArr.push(
-            'accessories',
-            'kitchen-accessories',
-            'mobile-accessories',
-            'sports-accessories',
-          );
-          break;
-        }
-        case 'mens': {
-          categoryArr.push(
-            'mens-shirts',
-            'mens-shoes',
-            'mens-watches',
-          );
-          break;
-        }
-        case 'womens': {
-          categoryArr.push(
-            'tops',
-            'womens-bags',
-            'womens-dresses',
-            'womens-jewellery',
-            'womens-shoes',
-            'womens-watches',
-          );
-          break;
-        }
-        case 'beauty': {
-          categoryArr.push(
-            'fragrances',
-            'skin-care',
-            'beauty',
-          );
-          break;
-        }
-        default: {
-          categoryArr;
-          break;
-        }
+const categoryQuery = (
+  category: string,
+): string | string[] => {
+  if (category) {
+    const categoryArr: string[] = [];
+    switch (category) {
+      case 'accessories': {
+        categoryArr.push(
+          'accessories',
+          'kitchen-accessories',
+          'mobile-accessories',
+          'sports-accessories',
+        );
+        break;
       }
-
-      return categoryArr.length > 0
-        ? categoryArr
-        : category;
+      case 'mens': {
+        categoryArr.push(
+          'mens-shirts',
+          'mens-shoes',
+          'mens-watches',
+        );
+        break;
+      }
+      case 'womens': {
+        categoryArr.push(
+          'tops',
+          'womens-bags',
+          'womens-dresses',
+          'womens-jewellery',
+          'womens-shoes',
+          'womens-watches',
+        );
+        break;
+      }
+      case 'beauty': {
+        categoryArr.push(
+          'fragrances',
+          'skin-care',
+          'beauty',
+        );
+        break;
+      }
+      default: {
+        categoryArr;
+        break;
+      }
     }
-    return '';
-  };
-  const categoryStr = categoryQuery();
-  console.log('categoryStr', categoryStr);
-  const url =
-    typeof categoryStr === 'string' && categoryStr !== ''
-      ? categoryStr === 'all'
-        ? `https://dummyjson.com/products?limit=${limit || 10}&skip=${skip || 0}`
-        : categoryStr !== 'all'
-          ? `https://dummyjson.com/products/category/${categoryStr}`
-          : ''
-      : query && query !== ''
-        ? `https://dummyjson.com/products/search?q=${query}&limit=${limit || 10}`
-        : '';
 
-  if (Array.isArray(categoryStr) && url === '') {
-    const categoryArr = categoryStr as string[];
-    const products = await Promise.all(
-      categoryArr.map(async (category) => {
-        const categoryUrl = `https://dummyjson.com/products/category/${category}`;
-        const data =
-          await fetchProductsFromApi(categoryUrl);
-
-        return data;
-      }),
-    );
-    return products.flat();
-  } else {
-    const products = await fetchProductsFromApi(url);
-    return products;
+    return categoryArr.length > 0 ? categoryArr : category;
   }
+  return '';
 };
 
-const transformedProducts = (products: Product[]) => {
+const transformedProducts = (products: Product[] | any) => {
   const transformedProducts = products?.map(
     (product: any) => ({
       ...product,
+      id: product._id || product.id,
       images: attachProductImages(
         product.images,
         product.title,
@@ -116,26 +73,139 @@ const transformedProducts = (products: Product[]) => {
   return transformedProducts;
 };
 
-const fetchProductsFromApi = async (url: string) => {
-  try {
-    const res = await fetch(url, {
-      cache: 'no-store',
-    });
-    if (!res.ok) {
-      throw new Error('Failed to fetch products');
-    }
-    const { products } = await res.json();
-    if (products.length === 0) return products;
-    const filteredProducts = products.filter(
-      (product: Product) =>
-        product.category !== 'groceries',
-    );
-    const newProducts = transformedProducts(
-      filteredProducts,
-    );
-    return newProducts;
-  } catch (err) {
-    console.error('Error fetching products:', err);
-    return [];
+export interface IProductsParams {
+  category?: string;
+  query?: string;
+  limit?: number;
+  skip?: number;
+}
+
+export const getProducts = async (
+  params: IProductsParams,
+) => {
+  const { category = '', query = '', limit, skip } = params;
+  console.log(
+    'inside fetchProductsByCategory',
+    category,
+    query,
+  );
+  let searchString = query;
+  if (!query) {
+    searchString = '';
   }
+
+  const categoryStr = category && categoryQuery(category);
+  const skipVal =
+    categoryStr === 'all' ? skip || 0 : undefined;
+  const limitVal =
+    categoryStr === 'all' ? limit || 10 : undefined;
+
+  console.log({
+    skipVal,
+    limitVal,
+    categoryStr,
+    searchString,
+  });
+
+  const getCachedProducts = unstable_cache(
+    async () => {
+      try {
+        const matchClauses: any[] = [];
+
+        // 🧠 Fuzzy text search using $search
+        if (searchString) {
+          matchClauses.push({
+            $search: {
+              index: 'default', // your Atlas search index name
+              compound: {
+                should: [
+                  {
+                    text: {
+                      query: searchString,
+                      path: 'title',
+                      fuzzy: {
+                        maxEdits: 2,
+                        prefixLength: 2,
+                      },
+                    },
+                  },
+                  {
+                    text: {
+                      query: searchString,
+                      path: 'description',
+                      fuzzy: {
+                        maxEdits: 2,
+                        prefixLength: 2,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          });
+        }
+
+        // 🏷 Category filtering
+        const categoryClause = categoryStr
+          ? {
+              $match: {
+                category: Array.isArray(categoryStr)
+                  ? { $in: categoryStr }
+                  : categoryStr === 'all'
+                    ? { $ne: 'groceries' }
+                    : categoryStr,
+              },
+            }
+          : null;
+
+        const result = await prisma.$runCommandRaw({
+          aggregate: 'Product',
+
+          pipeline: [
+            ...matchClauses,
+            ...(categoryClause ? [categoryClause] : []),
+            {
+              $skip: skipVal ?? 0,
+            },
+            {
+              $limit: limitVal ?? 20,
+            },
+          ],
+          cursor: {},
+        });
+
+        console.log(
+          'Total count:',
+          (result as any)?.cursor?.firstBatch.length || 0,
+        );
+
+        console.log(
+          'cache Key',
+          searchString
+            ? `products:${category}:${searchString}`
+            : `products:${category}`,
+        );
+        const products =
+          (result as any).cursor?.firstBatch || [];
+        if (products.length === 0) return products;
+
+        const newProducts = transformedProducts(products);
+
+        return newProducts;
+      } catch (error) {
+        console.error('❌ Prisma error:', error);
+        throw new Error('Error fetching products');
+      }
+    },
+    [
+      searchString
+        ? `products:${category}:${searchString}`
+        : `products:${category}`,
+    ],
+    {
+      revalidate: 600, // Optional: Revalidate cache every 10 mins
+    },
+  );
+
+  return await getCachedProducts();
 };

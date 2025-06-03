@@ -7,20 +7,13 @@ import dynamic from 'next/dynamic';
 import AddRating from './AddRating';
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import { Review } from '@prisma/client';
+import getProductById from '@/actions/getProductsById';
+import {
+  FullProduct,
+  Image,
+  Product,
+} from '@/app/components/products/types';
 
-async function fetchProductFromAPI(productId: number) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) return null;
-  const res = await fetch(
-    `${apiUrl}/products/api/${productId}`,
-    { cache: 'force-cache' },
-  );
-
-  if (!res.ok) {
-    throw new Error('Product not found in API');
-  }
-  return await res.json();
-}
 
 async function fetchReviewForProduct(
   productId: string,
@@ -58,15 +51,29 @@ const ProductPage = async ({
     (p) => p.id === productId,
   );
 
-  let product;
+  let product: FullProduct | Product | null = null;
   let existingReview: Review | null = null;
   if (hardcodedProduct) {
-    product = hardcodedProduct;
+    product = {
+      ...hardcodedProduct,
+      reviews: hardcodedProduct.reviews.map((review) => ({
+        ...review,
+        createdDate: new Date(review.createdDate),
+        user: {
+          ...review.user,
+          createdAt: review.user.createdAt
+            ? new Date(review.user.createdAt)
+            : null,
+          updatedAt: review.user.updatedAt
+            ? new Date(review.user.updatedAt)
+            : null,
+        },
+      })),
+    };
   } else {
     // Fetch from API if not in hardcoded products
-    try {
-      const id = parseInt(productId, 10);
-      product = await fetchProductFromAPI(id);
+    try {     
+      product = await getProductById(productId);
     } catch (error) {
       return (
         <div>
@@ -78,6 +85,14 @@ const ProductPage = async ({
   }
 
   const currentUser = await getCurrentUser();
+  if (!product) {
+    return (
+      <div>
+        <h1>Product Not Found</h1>
+        <p>The requested product could not be found.</p>
+      </div>
+    );
+  }
   existingReview = await fetchReviewForProduct(
     product.id.toString(),
     currentUser?.id,
@@ -94,8 +109,12 @@ const ProductPage = async ({
           id: currentUser?.id ?? '',
           name: currentUser?.name ?? '',
           email: currentUser?.email ?? '',
-          createdAt: currentUser?.createdAt ?? '',
-          updatedAt: currentUser?.updatedAt ?? '',
+          createdAt: currentUser?.createdAt
+            ? new Date(currentUser.createdAt)
+            : new Date(),
+          updatedAt: currentUser?.updatedAt
+            ? new Date(currentUser.updatedAt)
+            : new Date(),
           image: currentUser?.image ?? '',
           emailVerified:
             currentUser?.emailVerified === 'true'
@@ -114,16 +133,71 @@ const ProductPage = async ({
     () => import('./ProductDetails'),
   );
 
+  const productWithDate = {
+    id: product.id,
+    category: product.category,
+    title: product.title,
+    description: product.description,
+    brand: product?.brand ?? null,
+    price: product.price,
+    stock: product?.stock ?? null,
+    inStock: product?.inStock ?? null,
+    quantity: product?.quantity ?? null,
+    availabilityStatus: product?.availabilityStatus ?? '',
+    images:
+      product?.images?.map((image: Image) => ({
+        ...image,
+        color: image?.color ?? null,
+        colorCode: image?.colorCode ?? null,
+      })) || [],
+    reviews: product.reviews.map((review) => ({
+      ...review,
+      id: review.id || '',
+      userId: review.userId || '',
+      productId: review.productId || '',
+      rating: review.rating || 0,
+      createdAt: review.createdDate
+        ? new Date(review.createdDate)
+        : new Date(),
+      date: review.createdDate
+        ? new Date(review.createdDate)
+        : new Date(),
+      createdDate: review.createdDate
+        ? new Date(review.createdDate)
+        : new Date(),
+      comment: review?.comment ?? null,
+      reviewerName: review.user?.name || null,
+      reviewerEmail: review.user?.email || null,
+      user: {
+        id: review.user?.id || '',
+        name: review.user?.name || '',
+        email: review.user?.email || '',
+        emailVerified: review.user?.emailVerified || null,
+        image: review.user?.image || null,
+        hashedPassword: review.user?.hashedPassword || null,
+        role: review.user?.role || '',
+        createdAt: review.user?.createdAt
+          ? new Date(review.user.createdAt)
+          : null,
+        updatedAt: review.user?.updatedAt
+          ? new Date(review.user.updatedAt)
+          : null,
+      },
+    })),
+  };
+
   return (
     <div className="p-8">
       <Container>
         <Suspense
           key={product.id}
           fallback={<div>Loading item...</div>}>
-          {product && <ProductDetails product={product} />}
+          {product && (
+            <ProductDetails product={productWithDate} />
+          )}
           <div className="flex flex-col mt-20 gap-4">
             <AddRating
-              product={product}
+              product={productWithDate}
               user={currentUser}
               existingReview={existingReview}
             />

@@ -1,6 +1,8 @@
+import { Prisma } from '@prisma/client';
+
 export type Image = {
-  color?: string;
-  colorCode?: string;
+  color?: string | null;
+  colorCode?: string | null;
   image: string;
   alt: string;
 };
@@ -9,14 +11,14 @@ export type Product = {
   title: string;
   description: string;
   price: number;
-  brand: string;
+  brand?: string | null;
   category: string;
-  inStock: boolean;
+  inStock?: boolean | null;
   images: Image[];
   reviews: Review[];
-  quantity: number;
-  availabilityStatus?: string;
-  stock?: number;
+  quantity?: number | null;
+  availabilityStatus?: string | null;
+  stock?: number | null;
 };
 
 export type Review = {
@@ -24,18 +26,31 @@ export type Review = {
   userId: string;
   productId: string;
   rating: number;
-  comment?: string;
-  createdDate?: string;
-  date?: string;
+  comment?: string | null;
+  reviewerName?: string | null;
+  reviewerEmail?: string | null;
+  createdDate?: Date | null;
+  date?: Date | null;
   user: {
     id: string;
     name: string;
     email: string;
     emailVerified?: boolean | null;
-    image?: string;
+    image?: string | null;
     hashedPassword?: string | null;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: Date | null;
+    updatedAt?: Date | null;
     role?: string;
   };
 };
+
+export type FullProduct = Prisma.ProductGetPayload<{
+  include: {
+    images: true;
+    reviews: {
+      include: {
+        user: true;
+      };
+    };
+  };
+}>;

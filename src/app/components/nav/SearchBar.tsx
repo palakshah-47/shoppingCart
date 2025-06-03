@@ -5,6 +5,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
+import { useRef } from 'react';
 import {
   FieldValues,
   SubmitHandler,
@@ -15,18 +16,15 @@ const SearchBar = () => {
   const router = useRouter();
   const params = useSearchParams();
   const pathname = usePathname();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FieldValues>({
-    defaultValues: { searchTerm: '' },
-  });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (
-    data: FieldValues,
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const handleSubmit = (
+    event: React.FormEvent<HTMLFormElement>,
   ) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const searchTerm = formData.get('searchTerm') as string;
+
     const searchParams = new URLSearchParams(
       params ?? undefined,
     );
@@ -34,19 +32,27 @@ const SearchBar = () => {
     if (category) {
       searchParams.delete('category');
     }
-    if (pathname === '/products' && data.searchTerm) {
-      searchParams.set('q', data.searchTerm);
+    if (pathname === '/products' && searchTerm) {
+      searchParams.set('q', searchTerm);
       router.push(`${pathname}?${searchParams.toString()}`);
-      reset();
-    } else if (pathname === '/' && data.searchTerm) {
-      searchParams.set('q', data.searchTerm);
+      if (searchInputRef.current) {
+        searchInputRef.current.value = '';
+      }
+    } else if (pathname === '/' && searchTerm) {
+      searchParams.set('q', searchTerm);
       router.push(
         `${pathname}products?${searchParams.toString()}`,
       );
-      reset();
-    } else if (!data.searchTerm) {
+      // formData.set('searchTerm', '');
+      if (searchInputRef.current) {
+        searchInputRef.current.value = '';
+      }
+    } else if (!searchTerm) {
       searchParams.delete('q');
       router.push('/');
+      if (searchInputRef.current) {
+        searchInputRef.current.value = '';
+      }
     }
   };
 
@@ -55,20 +61,30 @@ const SearchBar = () => {
   if (!isMainPage) return null;
 
   return (
-    <div className="flex items-center w-40 md:w-80 sm:w-40">
-      <input
-        {...register('searchTerm')}
-        autoComplete="off"
-        type="text"
-        placeholder="Explore E~shop"
-        className="p-2 border border-gray-300 focus:outline-none focus:border-[0.5px] focus:border-slate-500
-    w-40 md:w-80 sm:w-40"></input>
-      <button
-        className="p-2 bg-slate-700 text-white rounded-r-md hover:opacity-80"
-        onClick={handleSubmit(onSubmit)}>
-        Search
-      </button>
-    </div>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-2xl mx-auto relative">
+      <div
+        className="flex items-center gap-2 rounded-xl bg-white border-2
+      border-black/10 focus-within:border-blue-500/50 transition-all duration-300">
+        <div className="flex items-center w-40 md:w-80 sm:w-40">
+          <input
+            type="text"
+            ref={searchInputRef}
+            name="searchTerm"
+            autoComplete="off"
+            placeholder="Explore E~shop"
+            className="flex-1 px-3 py-2 border-none focus:outline-none
+             focus:ring-0 placeholder:text-zinc:400 w-40 md:w-80 sm:w-40"
+          />
+          <button
+            type="submit"
+            className="p-2 bg-slate-700 text-white rounded-r-md hover:opacity-80">
+            Search
+          </button>
+        </div>
+      </div>
+    </form>
   );
 };
 
