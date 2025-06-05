@@ -1,6 +1,13 @@
 import prisma from '@/libs/prismadb';
 import { Order, User } from '@prisma/client';
 
+/**
+ * Retrieves all orders from the database, including associated user information, sorted by creation date in descending order.
+ *
+ * @returns A promise that resolves to an array of orders, each with its related user data.
+ *
+ * @throws {Error} If the orders cannot be fetched from the database, including the original error message if available.
+ */
 export default async function getOrders(): Promise<
   Array<Order & { user: User }>
 > {

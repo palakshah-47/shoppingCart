@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/libs/prismadb';
 import { getCurrentUser } from '@/actions/getCurrentUser';
+/**
+ * Handles DELETE requests to remove a review by its ID, enforcing authentication and authorization.
+ *
+ * Deletes the specified review if the requester is either the review owner or has an admin role. Returns appropriate HTTP status codes for unauthorized access, missing parameters, not found, forbidden actions, and server errors.
+ *
+ * @param request - The incoming HTTP request.
+ * @param params - An object containing a promise that resolves to the route parameters, including {@link ratingId}.
+ * @returns A JSON response with the deleted review data on success, or an error message with the relevant HTTP status code.
+ */
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ ratingId: string }> },

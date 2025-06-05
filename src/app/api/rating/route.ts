@@ -4,6 +4,13 @@ import prisma from '@/libs/prismadb';
 
 import { NextRequest, NextResponse } from 'next/server';
 
+/**
+ * Handles creation of a new product review by an authenticated user.
+ *
+ * Validates that the user is authenticated, has received delivery of the product, and has not already submitted a review for the specified product. Returns appropriate error responses for unauthorized access, duplicate reviews, or if the product has not been delivered. On success, creates and returns the new review.
+ *
+ * @returns A JSON response containing the created review with a 201 status, or an error message with the appropriate HTTP status code.
+ */
 export async function POST(request: Request) {
   const currentUser = await getCurrentUser();
 
@@ -58,6 +65,13 @@ export async function POST(request: Request) {
   });
   return NextResponse.json(review, { status: 201 });
 }
+/**
+ * Retrieves a specific product review by user and product ID.
+ *
+ * Validates the presence and format of `userId` and `productId` query parameters. Returns the review if found, or `null` if no matching review exists.
+ *
+ * @returns A JSON response containing the review object, `null` if not found, or an error message with an appropriate HTTP status code for invalid or missing parameters.
+ */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId');

@@ -10,6 +10,14 @@ import { getProducts } from '@/actions/fetchProducts';
 import { NextResponse } from 'next/server';
 import { FullProduct } from '../components/products/types';
 
+/**
+ * Fetches products based on the provided category or search query.
+ *
+ * @param params - An object containing an optional {@link params.category} or {@link params.query} to filter products.
+ * @returns A JSON response containing the fetched products.
+ *
+ * @throws {Error} If no products are found for the given parameters.
+ */
 async function fetchProducts(params: {
   category?: string;
   query?: string;
