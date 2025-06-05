@@ -39,31 +39,34 @@ const ManageOrdersClient: React.FC<
       };
     });
   }
-  const handleDispatch = useCallback(async (id: string) => {
-    try {
-      const filteredOrders = orders.filter(
-        (order) => order.id === id,
-      );
-      if (filteredOrders.length === 0) {
-        toast.error('Order not found');
-        return;
+  const handleDispatch = useCallback(
+    async (id: string) => {
+      try {
+        const filteredOrders = orders.filter(
+          (order) => order.id === id,
+        );
+        if (filteredOrders.length === 0) {
+          toast.error('Order not found');
+          return;
+        }
+        if (filteredOrders[0].status === 'pending') {
+          toast.error('Order is still pending');
+          return;
+        }
+        const res = await axios.put('/api/order', {
+          id,
+          deliveryStatus: 'dispatched',
+        });
+        res.status === 200 &&
+          toast.success('Order dispatched');
+        router.refresh();
+      } catch (err) {
+        toast.error('Something went wrong');
+        console.log(err);
       }
-      if (filteredOrders[0].status === 'pending') {
-        toast.error('Order is still pending');
-        return;
-      }
-      const res = await axios.put('/api/order', {
-        id,
-        deliveryStatus: 'dispatched',
-      });
-      res.status === 200 &&
-        toast.success('Order dispatched');
-      router.refresh();
-    } catch (err) {
-      toast.error('Something went wrong');
-      console.log(err);
-    }
-  }, []);
+    },
+    [orders, router],
+  );
 
   const handleDeliver = useCallback(async (id: string) => {
     try {

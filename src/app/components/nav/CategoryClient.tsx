@@ -23,26 +23,25 @@ const Category: React.FC<CategoryProps> = ({
   const pathname = usePathname();
 
   const handleCategoryChange = (newCategory: string) => {
-    const seacrhParams = new URLSearchParams(
+    const searchParams = new URLSearchParams(
       params ?? undefined,
     );
-    const query = seacrhParams?.get('q');
+    const query = searchParams?.get('q');
     if (query) {
-      seacrhParams.delete('q');
+      searchParams.delete('q');
     }
     if (newCategory === 'all') {
-      seacrhParams.delete('category');
+      searchParams.delete('category');
     } else {
-      seacrhParams.delete('category');
-      seacrhParams.set('category', newCategory);
+      searchParams.delete('category');
+      searchParams.set('category', newCategory);
     }
     if (pathname === '/products') {
       if (newCategory === 'all') {
         router.push('/');
       } else {
-        // router.replace(`${pathname}/?${params.toString()}`);
         const currentQuery = queryString.parse(
-          seacrhParams.toString(),
+          searchParams.toString(),
         );
         const updateQuery = {
           ...currentQuery,
@@ -62,7 +61,7 @@ const Category: React.FC<CategoryProps> = ({
       }
     } else {
       router.push(
-        `${pathname}products/?${seacrhParams.toString()}`,
+        `${pathname}products/?${searchParams.toString()}`,
       );
     }
   };

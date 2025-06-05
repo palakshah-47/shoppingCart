@@ -56,11 +56,15 @@ const AddRating: React.FC<AddRatingProps> = ({
     data: FieldValues,
   ) => {
     setIsLoading(true);
-    if (data.rating === 0) return;
+    if (data.rating === 0) {
+      toast.error('Please select a rating');
+      setIsLoading(false);
+      return;
+    }
     const ratingData = {
       ...data,
       userId: user?.id,
-      product: product,
+      productId: product.id,
     };
 
     // If no review exists, proceed to create a new one

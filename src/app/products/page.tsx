@@ -10,32 +10,20 @@ import { getProducts } from '@/actions/fetchProducts';
 import { NextResponse } from 'next/server';
 import { FullProduct } from '../components/products/types';
 
-
-async function fetchProductsWithCategory(category: string) {
-  console.log('Fetching products with category:', category);
-  const products = await getProducts({
-    category: category,
-    query: undefined,
-  });
-  if (!products) {
-    return NextResponse.error();
-  }
-  return NextResponse.json(products);
-}
-
-async function fetchProductsWithSearch(query: string) {
+async function fetchProducts(params: {
+  category?: string;
+  query?: string;
+}) {
+  console.log(
+    'Fetching products with category:',
+    params.category,
+  );
   console.log(
     'Fetching products with search query:',
-    query,
+    params.query,
   );
-
-  const products = await getProducts({
-    category: undefined,
-    query: query,
-  });
-  if (!products) {
-    return NextResponse.error();
-  }
+  const products = await getProducts(params);
+  if (!products) throw new Error('No products found');
   return NextResponse.json(products);
 }
 
@@ -61,11 +49,16 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
       : null;
 
   const initialProductsResponse = query
-    ? await fetchProductsWithSearch(query)
-    : await fetchProductsWithCategory(category);
+    ? await fetchProducts({ query })
+    : await fetchProducts({ category });
 
-  const initialProducts: FullProduct[] =
-    await initialProductsResponse.json();
+  let initialProducts: FullProduct[] = [];
+  try {
+    initialProducts = await initialProductsResponse.json();
+  } catch (e) {
+    console.error('Failed to load products', e);
+    initialProducts = [];
+  }
 
   console.log(
     'Initial Products length:',

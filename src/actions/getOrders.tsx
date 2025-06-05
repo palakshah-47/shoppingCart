@@ -1,6 +1,9 @@
 import prisma from '@/libs/prismadb';
+import { Order, User } from '@prisma/client';
 
-export default async function getOrders() {
+export default async function getOrders(): Promise<
+  Array<Order & { user: User }>
+> {
   try {
     const orders = await prisma.order.findMany({
       include: {
@@ -12,6 +15,9 @@ export default async function getOrders() {
     });
     return orders;
   } catch (error: any) {
-    throw new Error(error);
+    console.error('Error fetching orders:', error);
+    throw new Error(
+      `Failed to fetch orders: ${error.message || 'Unknown error'}`,
+    );
   }
 }

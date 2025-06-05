@@ -8,12 +8,13 @@ export async function POST(request: Request) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    return NextResponse.error();
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 },
+    );
   }
   const body = await request.json();
-  const { comment, rating, product, userId } = body;
-
-  const productId = product.id.toString();
+  const { comment, rating, productId, userId } = body;
 
   const deliveredOrder = currentUser?.orders.some((order) =>
     order.products.find(
@@ -40,7 +41,12 @@ export async function POST(request: Request) {
   }
 
   if (!deliveredOrder) {
-    return NextResponse.error();
+    return NextResponse.json(
+      {
+        error: 'Product must be delivered before reviewing',
+      },
+      { status: 403 },
+    );
   }
   const review = await prisma?.review.create({
     data: {
@@ -52,14 +58,33 @@ export async function POST(request: Request) {
   });
   return NextResponse.json(review, { status: 201 });
 }
-export async function GET(
-  request: NextRequest
-) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const userId =
-    searchParams.get('userId')
-  const productId =
-    searchParams.get('productId') 
+  const userId = searchParams.get('userId');
+  const productId = searchParams.get('productId');
+
+  // Validate userId and productId format
+  if (
+    userId &&
+    (typeof userId !== 'string' ||
+      userId.trim().length === 0)
+  ) {
+    return NextResponse.json(
+      { error: 'Invalid userId format' },
+      { status: 400 },
+    );
+  }
+
+  if (
+    productId &&
+    (typeof productId !== 'string' ||
+      productId.trim().length === 0)
+  ) {
+    return NextResponse.json(
+      { error: 'Invalid productId format' },
+      { status: 400 },
+    );
+  }
   if (!userId || !productId) {
     return NextResponse.json(
       { error: 'Missing userId or productId' },

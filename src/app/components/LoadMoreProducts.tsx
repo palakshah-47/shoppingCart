@@ -70,6 +70,7 @@ export const LoadMoreProducts = memo(
 
     const loadMoreProducts = async () => {
       let data: any = [];
+      //skipping extra 20 below to skip getting grocery items
       const next = skip === 10 ? skip + 30 : skip + 10;
       if (query) {
         data =
@@ -117,7 +118,7 @@ export const LoadMoreProducts = memo(
       } else if (category) {
         setSelectedCategory(category);
       }
-      if (inView) {
+      if (inView && hasMore) {
         loadMoreProducts();
       }
     }, [inView, hasMore, category, query]);
