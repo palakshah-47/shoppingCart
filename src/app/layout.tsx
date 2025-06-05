@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   description: 'Amazing e-shopping at your fingertips',
 };
 
+/**
+ * Defines the root layout structure for the application, including global providers and shared UI components.
+ *
+ * Wraps the page content with cart and product context providers, and includes the navigation bar, footer, and a global toast notification system.
+ *
+ * @param children - The content to be rendered within the main layout.
+ */
 export default async function RootLayout({
   children,
 }: {
