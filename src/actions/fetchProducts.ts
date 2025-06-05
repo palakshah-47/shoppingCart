@@ -47,10 +47,9 @@ const categoryQuery = (
         );
         break;
       }
-      default: {
-        categoryArr;
-        break;
-      }
+      default:
+        // no predefined synonyms – fall through and return the original category
+        return category;
     }
 
     return categoryArr.length > 0 ? categoryArr : category;
@@ -62,7 +61,7 @@ const transformedProducts = (products: Product[] | any) => {
   const transformedProducts = products?.map(
     (product: any) => ({
       ...product,
-      id: product._id || product.id,
+      id: (product._id || product.id)?.toString(),
       images: attachProductImages(
         product.images,
         product.title,
@@ -151,7 +150,7 @@ export const getProducts = async (
               $match: {
                 category: Array.isArray(categoryStr)
                   ? { $in: categoryStr }
-                  : categoryStr === 'all'
+                  : categoryStr === 'all' || searchString
                     ? { $ne: 'groceries' }
                     : categoryStr,
               },
@@ -168,7 +167,7 @@ export const getProducts = async (
               $skip: skipVal ?? 0,
             },
             {
-              $limit: limitVal ?? 20,
+              $limit: limitVal ?? 100,
             },
           ],
           cursor: {},
@@ -183,7 +182,9 @@ export const getProducts = async (
           'cache Key',
           searchString
             ? `products:${searchString}`
-            : `products:${categoryStr}`,
+            : categoryStr && categoryStr === 'all'
+              ? `products:${categoryStr}:${limitVal}:${skipVal}`
+              : `products:${categoryStr}`,
         );
         const products =
           (result as any).cursor?.firstBatch || [];
@@ -194,13 +195,15 @@ export const getProducts = async (
         return newProducts;
       } catch (error) {
         console.error('❌ Prisma error:', error);
-        throw new Error('Error fetching products');
+        throw error; // keep original message & stack
       }
     },
     [
       searchString
         ? `products:${searchString}`
-        : `products:${categoryStr}`,
+        : categoryStr && categoryStr === 'all'
+          ? `products:${categoryStr}:${limitVal}:${skipVal}`
+          : `products:${categoryStr}`,
     ],
     {
       revalidate: 600, // Optional: Revalidate cache every 10 mins

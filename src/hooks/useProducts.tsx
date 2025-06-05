@@ -1,4 +1,7 @@
-import { FullProduct, Product } from '@/app/components/products/types';
+import {
+  FullProduct,
+  Product,
+} from '@/app/components/products/types';
 import {
   createContext,
   useCallback,
@@ -10,7 +13,9 @@ type ProductContextType = {
   skipVal: number;
   productsVal: Product[] | FullProduct[] | null;
   handleSkipVal: (skip: number) => void;
-  handleProductsVal: (products: Product[]) => void;
+  handleProductsVal: (
+    products: Product[] | FullProduct[],
+  ) => void;
 };
 
 export const ProductContext =
@@ -38,7 +43,7 @@ export const ProductContextProvider: React.FC<
   }, []);
 
   const handleProductsVal = useCallback(
-    (products: Product[]) => {
+    (products: Product[] | FullProduct[]) => {
       setProductsVal(products);
     },
     [],

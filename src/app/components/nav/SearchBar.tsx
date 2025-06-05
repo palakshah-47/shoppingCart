@@ -6,11 +6,6 @@ import {
   useSearchParams,
 } from 'next/navigation';
 import { useRef } from 'react';
-import {
-  FieldValues,
-  SubmitHandler,
-  useForm,
-} from 'react-hook-form';
 
 const SearchBar = () => {
   const router = useRouter();
@@ -49,7 +44,9 @@ const SearchBar = () => {
       }
     } else if (!searchTerm) {
       searchParams.delete('q');
-      router.push('/');
+      router.push(
+        pathname === '/products' ? '/products' : '/',
+      );
       if (searchInputRef.current) {
         searchInputRef.current.value = '';
       }

@@ -8,15 +8,15 @@ export async function GET(request: NextRequest) {
 
   const query = searchParams.get('q') ?? undefined;
 
-  if (!category) {
+  if (!category && !query) {
     return NextResponse.json(
-      { error: 'Missing category' },
+      { error: 'Missing category or query parameter' },
       { status: 400 },
     );
   }
   const products = await getProducts({
-    category: query && query !== '' ? undefined : category,
-    query: category && category !== '' ? query : undefined,
+    category: query ? undefined : category,
+    query: query || undefined,
   });
   if (!products) {
     return NextResponse.error();

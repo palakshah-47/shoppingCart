@@ -16,7 +16,7 @@ import { attachProductImages } from '@/app/utils/productHelper';
 import { useCart } from '@/hooks/useCart';
 import { MdCheckCircle, MdArrowBack } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
-import { Product } from '@prisma/client';
+import { FullProduct } from '@/app/components/products/types';
 import { Image } from '@/app/components/products/types';
 
 export const Horizontal = () => {
@@ -24,7 +24,7 @@ export const Horizontal = () => {
 };
 
 interface ProductDetailsProps {
-  product: Product;
+  product: FullProduct;
 }
 
 export type CartProductType = {
@@ -128,7 +128,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
         return { ...prev };
       return {
         ...prev,
-        quantity: prev?.quantity ? ++prev.quantity : 1,
+        quantity: (prev?.quantity ?? 0) + 1,
       };
     });
   }, [cartProduct?.quantity]);
