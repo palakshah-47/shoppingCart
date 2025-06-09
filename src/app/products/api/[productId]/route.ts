@@ -1,38 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { unstable_cache } from 'next/cache';
+import prisma from '@/libs/prismadb';
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ productId: string }> },
 ) {
   const { productId } = await params;
+  const getCachedProduct = unstable_cache(
+    async () => {
+      try {
+        const product = await prisma.product.findUnique({
+          where: {
+            id: productId,
+          },
+          include: {
+            reviews: {
+              include: {
+                user: true,
+              },
+            },
+            images: true,
+          },
+        });
+
+        console.log('cache productId Key', productId);
+
+        if (!product) return null;
+        return product;
+      } catch (err) {
+        console.error('❌ Prisma error:', err);
+        throw new Error(
+          err instanceof Error ? err.message : String(err),
+        );
+      }
+    },
+    [productId],
+    {
+      revalidate: 600, // Optional: Revalidate cache every 10 mins
+    },
+  );
+
   try {
-    // Fetch data from the external API using the dynamic productId
-    const apiResponse = await unstable_cache(
-      () => fetch(`https://dummyjson.com/products/${productId}`),
-      ['product', productId],
-      { tags: [`product-${productId}`], revalidate: 3600 }
-    )();
-    if (!apiResponse.ok) {
-      throw new Error('Failed to fetch product data');
+    if (!productId) {
+      return NextResponse.json(
+        { error: 'Missing product ID' },
+        { status: 400 },
+      );
     }
 
-    const data = await apiResponse.json();
+    const product = await getCachedProduct();
 
-    // Set Cache-Control header
-    const response = NextResponse.json(data, {
-      status: 200,
-    });
+    if (!product) {
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 },
+      );
+    }
 
-    response.headers.set(
-      'Cache-Control',
-      'public, max-age=3600, stale-while-revalidate=59',
-    );
-    return response;
-  } catch (error) {
-    console.error('Error fetching product data:', error);
+    return NextResponse.json(product);
+  } catch (err) {
+    console.error('❌ Error in product route:', err);
     return NextResponse.json(
-      { error: 'Failed to fetch product data' },
+      { error: 'Server error' },
       { status: 500 },
     );
   }
