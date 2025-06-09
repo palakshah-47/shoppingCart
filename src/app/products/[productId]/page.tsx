@@ -7,13 +7,23 @@ import dynamic from 'next/dynamic';
 import AddRating from './AddRating';
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import { Review } from '@prisma/client';
-import getProductById from '@/actions/getProductsById';
 import {
   FullProduct,
   Image,
   Product,
 } from '@/app/components/products/types';
 
+async function fetchProductFromAPI(productId: string) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiUrl) return null;
+  const res = await fetch(
+    `${apiUrl}/products/api/${productId}`,
+  );
+  if (res.ok) {
+    return await res.json();
+  }
+  return null; 
+}
 
 async function fetchReviewForProduct(
   productId: string,
@@ -72,8 +82,8 @@ const ProductPage = async ({
     };
   } else {
     // Fetch from API if not in hardcoded products
-    try {     
-      product = await getProductById(productId);
+    try {
+      product = await fetchProductFromAPI(productId);     
     } catch (error) {
       return (
         <div>

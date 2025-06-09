@@ -124,7 +124,7 @@ export const getProducts = async (
                       path: 'title',
                       fuzzy: {
                         maxEdits: 2,
-                        prefixLength: 2,
+                        prefixLength: 4,
                       },
                     },
                   },
@@ -134,7 +134,7 @@ export const getProducts = async (
                       path: 'description',
                       fuzzy: {
                         maxEdits: 2,
-                        prefixLength: 2,
+                        prefixLength: 4,
                       },
                     },
                   },
@@ -164,6 +164,11 @@ export const getProducts = async (
             ...matchClauses,
             ...(categoryClause ? [categoryClause] : []),
             {
+              $match: {
+                category: { $ne: 'groceries' },
+              },
+            },
+            {
               $skip: skipVal ?? 0,
             },
             {
@@ -172,11 +177,6 @@ export const getProducts = async (
           ],
           cursor: {},
         });
-
-        console.log(
-          'Total count:',
-          (result as any)?.cursor?.firstBatch.length || 0,
-        );
 
         console.log(
           'cache Key',
