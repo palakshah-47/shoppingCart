@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/libs/prismadb';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
     });
 
     const suggestions =
-      (res as any).cursor?.firstBatch || [];    
+      (res as any).cursor?.firstBatch || [];
     return NextResponse.json({ suggestions });
   } catch (error) {
     console.error('❌ Prisma error:', error);
