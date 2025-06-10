@@ -84,8 +84,7 @@ const ProductPage = async ({
   } else {
     // Fetch from API if not in hardcoded products
     try {
-      product = await getProductById(productId);
-      // fetchProductFromAPI(productId);
+      product = await getProductById(productId);      
     } catch (error) {
       return (
         <div>

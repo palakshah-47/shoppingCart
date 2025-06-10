@@ -106,10 +106,8 @@ export const getProducts = async (
     searchString,
   });
 
-  const getCachedProducts = async () =>
-    // unstable_cache(
-    //   async () =>
-    {
+  const getCachedProducts = unstable_cache(
+    async () => {
       try {
         const matchClauses: any[] = [];
 
@@ -199,18 +197,18 @@ export const getProducts = async (
         console.error('❌ Prisma error:', error);
         throw error; // keep original message & stack
       }
-    };
-  //   [
-  //     searchString
-  //       ? `products:${searchString}`
-  //       : categoryStr && categoryStr === 'all'
-  //         ? `products:${categoryStr}:${limitVal}:${skipVal}`
-  //         : `products:${categoryStr}`,
-  //   ],
-  //   {
-  //     revalidate: 600, // Optional: Revalidate cache every 10 mins
-  //   },
-  // );
+    },
+    [
+      searchString
+        ? `products:${searchString}`
+        : categoryStr && categoryStr === 'all'
+          ? `products:${categoryStr}:${limitVal}:${skipVal}`
+          : `products:${categoryStr}`,
+    ],
+    {
+      revalidate: 600, // Optional: Revalidate cache every 10 mins
+    },
+  );
 
   return await getCachedProducts();
 };
