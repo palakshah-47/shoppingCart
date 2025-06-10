@@ -12,6 +12,7 @@ import {
   Image,
   Product,
 } from '@/app/components/products/types';
+import getProductById from '@/actions/getProductsById';
 
 async function fetchProductFromAPI(productId: string) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -22,7 +23,7 @@ async function fetchProductFromAPI(productId: string) {
   if (res.ok) {
     return await res.json();
   }
-  return null; 
+  return null;
 }
 
 async function fetchReviewForProduct(
@@ -83,7 +84,7 @@ const ProductPage = async ({
   } else {
     // Fetch from API if not in hardcoded products
     try {
-      product = await fetchProductFromAPI(productId);     
+      product = await getProductById(productId);      
     } catch (error) {
       return (
         <div>
