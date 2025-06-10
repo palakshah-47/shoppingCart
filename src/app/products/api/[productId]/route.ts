@@ -7,39 +7,41 @@ export async function GET(
   { params }: { params: Promise<{ productId: string }> },
 ) {
   const { productId } = await params;
-  const getCachedProduct = unstable_cache(
-    async () => {
-      try {
-        const product = await prisma.product.findUnique({
-          where: {
-            id: productId,
-          },
-          include: {
-            reviews: {
-              include: {
-                user: true,
-              },
+  const getCachedProduct = async () => {
+    // unstable_cache(
+    //   async () =>
+    // {
+    try {
+      const product = await prisma.product.findUnique({
+        where: {
+          id: productId,
+        },
+        include: {
+          reviews: {
+            include: {
+              user: true,
             },
-            images: true,
           },
-        });
+          images: true,
+        },
+      });
 
-        console.log('cache productId Key', productId);
+      console.log('cache productId Key', productId);
 
-        if (!product) return null;
-        return product;
-      } catch (err) {
-        console.error('❌ Prisma error:', err);
-        throw new Error(
-          err instanceof Error ? err.message : String(err),
-        );
-      }
-    },
-    [productId],
-    {
-      revalidate: 600, // Optional: Revalidate cache every 10 mins
-    },
-  );
+      if (!product) return null;
+      return product;
+    } catch (err) {
+      console.error('❌ Prisma error:', err);
+      throw new Error(
+        err instanceof Error ? err.message : String(err),
+      );
+    }
+  };
+  //   [productId],
+  //   {
+  //     revalidate: 600, // Optional: Revalidate cache every 10 mins
+  //   },
+  // );
 
   try {
     if (!productId) {
