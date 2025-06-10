@@ -7,11 +7,8 @@ export async function GET(
   { params }: { params: Promise<{ productId: string }> },
 ) {
   const { productId } = await params;
-
-  const getCachedProduct = async () =>
-    // unstable_cache(
-    //   async () =>
-    {
+  const getCachedProduct = unstable_cache(
+    async () => {
       try {
         const product = await prisma.product.findUnique({
           where: {
@@ -37,12 +34,12 @@ export async function GET(
           err instanceof Error ? err.message : String(err),
         );
       }
-    };
-  //   [productId],
-  //   {
-  //     revalidate: 600, // Optional: Revalidate cache every 10 mins
-  //   },
-  // );
+    },
+    [productId],
+    {
+      revalidate: 600, // Optional: Revalidate cache every 10 mins
+    },
+  );
 
   try {
     if (!productId) {
