@@ -19,7 +19,16 @@ export async function GET(request: NextRequest) {
             autocomplete: {
               query,
               path: 'title',
+              fuzzy: {
+                maxEdits: 2,
+                prefixLength: 2,
+              },
             },
+          },
+        },
+        {
+          $match: {
+            category: { $ne: 'groceries' },
           },
         },
         { $limit: 5 },
