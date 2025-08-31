@@ -10,10 +10,12 @@ import NullData from '../NullData';
 
 interface ProductCardProps<TData> {
   data: TData;
+  priority?: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps<any>> = ({
   data,
+  priority,
 }) => {
   const router = useRouter();
   const Rating = dynamic(
@@ -50,7 +52,8 @@ const ProductCard: React.FC<ProductCardProps<any>> = ({
             alt={data?.title}
             className="object-contain"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            loading="lazy"
+            loading={priority ? 'eager' : 'lazy'}
+            priority={priority}
           />
         </div>
 
