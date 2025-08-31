@@ -18,6 +18,18 @@ export const metadata: Metadata = {
   description: 'Amazing e-shopping at your fingertips',
 };
 
+/**
+ * Root layout for the application.
+ *
+ * Wraps page content with global providers, UI chrome, and the HTML/BODY root:
+ * - applies the Poppins font
+ * - renders a global Toaster for notifications
+ * - wraps content with CartProvider and ProductProvider
+ * - includes PerformanceMonitor, NavBar, a <main> region for `children`, and Footer
+ *
+ * @param children - Page content to render inside the layout's <main> element.
+ * @returns The root HTML element containing the app layout.
+ */
 export default async function RootLayout({
   children,
 }: {
