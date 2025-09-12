@@ -64,11 +64,15 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
       // Only send limit/skip if there is no query
       let response;
       if (query) {
-        response = await getProducts({ query });
+        response = await getProducts({
+          query,
+          limit,
+          skip: pageParam,
+        });
       } else {
         response = await getProducts({
           category,
-          limit: category === 'all' ? limit : 0,
+          limit,
           skip: pageParam,
         });
       }
@@ -79,6 +83,16 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
       return response;
     },
     initialPageParam: skip,
+    getNextPageParam: (
+      lastPage: any[],
+      _pages: any,
+      lastPageParam: number,
+    ) => {
+      if (!Array.isArray(lastPage)) return undefined;
+      return lastPage.length < limit
+        ? undefined
+        : lastPageParam + limit;
+    },
   });
 
   const productsWithDateObjects = hardCodedProducts.map(

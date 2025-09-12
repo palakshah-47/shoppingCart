@@ -20,13 +20,14 @@ export default function InfiniteScrollTrigger({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          observer.unobserve(entry.target as Element);
           onLoadMore();
         }
       },
-      { threshold: 1.0 }, // trigger when fully visible
+      { threshold: 0, rootMargin: '200px 0px' }, // prefetch before fully in view
     );
-
     const current = ref.current;
     if (current) observer.observe(current);
 

@@ -72,10 +72,9 @@ export default function ProductsList({
       ].map((product: Product, index) => (
         <Link
           href={`/products/${product.id}`}
-          key={`product-link-${index}-${product?.id}`}
+          key={product.id}
           scroll={true}>
-          <ProductCard
-            key={`product-card-${index}-${product?.id}`}
+          <ProductCard           
             data={product}
           />
         </Link>
