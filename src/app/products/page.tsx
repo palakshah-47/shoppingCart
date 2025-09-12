@@ -1,14 +1,19 @@
 export const dynamic = 'force-dynamic';
-import { LoadMoreProducts } from '@/app/components/LoadMoreProducts';
 import { Suspense } from 'react';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import { getShuffledArray } from '../utils/getShuffledArray';
 import { products as hardCodedProducts } from '../../../const/products';
+import getQueryClient from '@/lib/getQueryClient';
 import Container from '../components/Container';
 import { TopBanner } from '../components/TopBanner';
 import { getProducts } from '@/actions/fetchProducts';
 import { NextResponse } from 'next/server';
 import { FullProduct } from '../components/products/types';
+import {
+  dehydrate,
+  HydrationBoundary,
+} from '@tanstack/react-query';
+import ProductsList from '../components/ProductsList';
 
 async function fetchProducts(params: {
   category?: string;
@@ -47,23 +52,48 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
     resolvedSearchParams && 'q' in resolvedSearchParams
       ? resolvedSearchParams.q
       : null;
+  const skip = 0;
+  const limit = 10;
 
-  const initialProductsResponse = query
-    ? await fetchProducts({ query })
-    : await fetchProducts({ category });
+  const queryClient = getQueryClient();
 
-  let initialProducts: FullProduct[] = [];
-  try {
-    initialProducts = await initialProductsResponse.json();
-  } catch (e) {
-    console.error('Failed to load products', e);
-    initialProducts = [];
-  }
-
-  console.log(
-    'Initial Products length:',
-    initialProducts.length,
-  );
+  // 2. Prefetch the initial data into it
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['products', query, category, limit],
+    queryFn: async ({ pageParam = 0 }) => {
+      // Only send limit/skip if there is no query
+      let response;
+      if (query) {
+        response = await getProducts({
+          query,
+          limit,
+          skip: pageParam,
+        });
+      } else {
+        response = await getProducts({
+          category,
+          limit,
+          skip: pageParam,
+        });
+      }
+      console.log(
+        'Initial Products length:',
+        response.length,
+      );
+      return response;
+    },
+    initialPageParam: skip,
+    getNextPageParam: (
+      lastPage: any[],
+      _pages: any,
+      lastPageParam: number,
+    ) => {
+      if (!Array.isArray(lastPage)) return undefined;
+      return lastPage.length < limit
+        ? undefined
+        : lastPageParam + limit;
+    },
+  });
 
   const productsWithDateObjects = hardCodedProducts.map(
     (product) => ({
@@ -87,24 +117,27 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
     query ?? undefined,
   );
 
+  // 3. Dehydrate cache & wrap ProductsList
   return (
-    <Container>
-      {category !== 'all' && <TopBanner />}
-      <div className="p-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
-          <Suspense
-            fallback={<SkeletonCard />}
-            key={query ?? category}>
-            <LoadMoreProducts
-              initialProducts={initialProducts}
-              hardCodedProducts={shuffledProducts}
-              category={query ? null : category}
-              query={query}
-            />
-          </Suspense>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Container>
+        {category !== 'all' && <TopBanner />}
+        <div className="p-8 relative">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+            <Suspense
+              fallback={<SkeletonCard />}
+              key={query ?? category}>
+              <ProductsList
+                initialProducts={shuffledProducts}
+                category={category}
+                query={query ?? undefined}
+                limit={limit}
+              />
+            </Suspense>
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </HydrationBoundary>
   );
 };
 

@@ -7,9 +7,7 @@ interface HomeProps {
   searchParams?: Promise<{ category: string }>;
 }
 
-export default async function Home({
-  searchParams,
-}: HomeProps) {
+export default async function Home({}: HomeProps) {
   return (
     <Container>
       <TopBanner />

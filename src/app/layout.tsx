@@ -5,8 +5,8 @@ import NavBar from './components/nav/NavBar';
 import Footer from './components/footer/Footer';
 import { CartProvider } from '../providers/CartProvider';
 import { Toaster } from 'react-hot-toast';
-import { ProductProvider } from '@/providers/ProductProvider';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
+import { ReactQueryProvider } from './providers';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -24,7 +24,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">     
+    <html lang="en">
       <body
         className={`${poppins.className} text-slate=700`}>
         <Toaster
@@ -35,17 +35,17 @@ export default async function RootLayout({
             },
           }}
         />
-
-        <CartProvider>
-          <ProductProvider>
+        <ReactQueryProvider>
+          <CartProvider>            
             <div className="flex flex-col min-h-screen min-w-[460px] md:min-w-[760px]">
               <PerformanceMonitor />
               <NavBar />
               <main>{children}</main>
               <Footer />
             </div>
-          </ProductProvider>
-        </CartProvider>
+           
+          </CartProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
