@@ -11,9 +11,9 @@ const ProdcutList = ({
   return (
     <>
       {products ? (
-        products.map((product: Product, index) => (
+        products.map((product: Product) => (
           <ProductCard
-            key={`product-${index}-${product?.id}`}
+            key={product?.id}
             data={product}
           />
         ))
