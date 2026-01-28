@@ -1,6 +1,7 @@
 'use client';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { getProducts } from '@/actions/fetchProducts';
 import InfiniteScrollTrigger from './InfiniteScrollTrigger';
 import { Product } from './products/types';
@@ -60,23 +61,35 @@ export default function ProductsList({
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
+  const mergedProducts = useMemo(() => {
+    const pages = data?.pages
+      ? data.pages.flatMap((page) => page)
+      : [];
+    const combined = [...initialProducts, ...pages];
+    // de-duplicate by id while preserving order
+    const seen = new Set<string | number>();
+    const deduped: Product[] = [];
+    for (const p of combined) {
+      const id = (p as Product)?.id;
+      if (id == null) continue;
+      if (!seen.has(id)) {
+        seen.add(id);
+        deduped.push(p as Product);
+      }
+    }
+    return deduped;
+  }, [initialProducts, data?.pages]);
+
   return (
     <>
       {/* {status === 'pending' && <p>Loading products...</p>} */}
       {status === 'error' && <p>Error loading products</p>}
-      {[
-        ...initialProducts,
-        ...(data?.pages
-          ? data.pages.flatMap((page) => page)
-          : []),
-      ].map((product: Product, index) => (
+      {mergedProducts.map((product: Product) => (
         <Link
           href={`/products/${product.id}`}
           key={product.id}
           scroll={true}>
-          <ProductCard           
-            data={product}
-          />
+          <ProductCard data={product} />
         </Link>
       ))}
 

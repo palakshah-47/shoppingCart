@@ -5,7 +5,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Product } from './types';
-import { Suspense } from 'react';
+import { Suspense, useMemo, memo } from 'react';
 import NullData from '../NullData';
 
 interface ProductCardProps<TData> {
@@ -13,19 +13,22 @@ interface ProductCardProps<TData> {
   priority?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps<any>> = ({
+// Hoist dynamic import so it isn't recreated on every render
+const Rating = dynamic(() => import('@mui/material/Rating'));
+
+const ProductCardComponent: React.FC<ProductCardProps<any>> = ({
   data,
   priority,
 }) => {
   const router = useRouter();
-  const Rating = dynamic(
-    () => import('@mui/material/Rating'),
-  );
-  const rating =
-    data?.reviews?.reduce(
-      (total: number, review: any) => total + review.rating,
+  const rating = useMemo(() => {
+    if (!data?.reviews || data.reviews.length === 0) return 0;
+    const total = data.reviews.reduce(
+      (sum: number, review: any) => sum + review.rating,
       0,
-    ) / data?.reviews?.length;
+    );
+    return total / data.reviews.length;
+  }, [data?.reviews]);
 
   return !data ? (
     <NullData title="No product data available" />
@@ -87,5 +90,7 @@ const ProductCard: React.FC<ProductCardProps<any>> = ({
     </div>
   );
 };
+
+const ProductCard = memo(ProductCardComponent);
 
 export default ProductCard;
