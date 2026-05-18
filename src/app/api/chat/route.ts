@@ -105,7 +105,7 @@ async function executeToolCall(
       return products
         .slice(0, 5)
         .map(
-          (p) =>
+          (p: typeof products[0]) =>
             `- ${p.title} ($${p.price.toFixed(2)}) - ${p.category} — Visit product: [ID: ${p.id}]`,
         )
         .join('\n');
@@ -166,7 +166,7 @@ Visit product: [ID: ${p.id}]`;
             ...products
               .slice(0, 2)
               .map(
-                (p) =>
+                (p: typeof products[0]) =>
                   `- ${p.title} ($${p.price.toFixed(2)}) — Visit: [ID: ${p.id}]`,
               ),
           );
