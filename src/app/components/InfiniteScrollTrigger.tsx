@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   onLoadMore: () => void;
@@ -14,9 +14,15 @@ export default function InfiniteScrollTrigger({
   isFetchingNextPage,
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || !hasNextPage || isFetchingNextPage)
+      return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -34,7 +40,12 @@ export default function InfiniteScrollTrigger({
     return () => {
       if (current) observer.unobserve(current);
     };
-  }, [hasNextPage, isFetchingNextPage, onLoadMore]);
+  }, [
+    isMounted,
+    hasNextPage,
+    isFetchingNextPage,
+    onLoadMore,
+  ]);
 
   return (
     <div

@@ -77,12 +77,15 @@ export interface IProductsParams {
   query?: string;
   limit?: number;
   skip?: number;
+  priceMin?: number;
+  priceMax?: number;
+  aiCategory?: string;
 }
 
 export const getProducts = async (
   params: IProductsParams,
 ) => {
-  const { category = '', query = '', limit, skip } = params;
+  const { category = '', query = '', limit, skip, priceMin, priceMax, aiCategory } = params;
   console.log(
     'inside fetchProductsByCategory',
     category,
@@ -93,7 +96,9 @@ export const getProducts = async (
     searchString = '';
   }
 
-  const categoryStr = category && categoryQuery(category);
+  // Use aiCategory if provided (from AI search), otherwise use regular category
+  const effectiveCategory = aiCategory || category;
+  const categoryStr = effectiveCategory && categoryQuery(effectiveCategory);
   const skipVal =
     categoryStr === 'all' ? skip || 0 : undefined;
   const limitVal =
@@ -157,12 +162,25 @@ export const getProducts = async (
             }
           : null;
 
+        // 💰 Price filtering (for AI search)
+        const priceClause: Record<string, unknown> = {};
+        if (priceMin !== undefined && priceMin !== null) {
+          priceClause.$gte = priceMin;
+        }
+        if (priceMax !== undefined && priceMax !== null) {
+          priceClause.$lte = priceMax;
+        }
+        const priceFilter = Object.keys(priceClause).length > 0
+          ? { $match: { price: priceClause } }
+          : null;
+
         const result = await prisma.$runCommandRaw({
           aggregate: 'Product',
 
           pipeline: [
             ...matchClauses,
             ...(categoryClause ? [categoryClause] : []),
+            ...(priceFilter ? [priceFilter] : []),
             {
               $match: {
                 category: { $ne: 'groceries' },

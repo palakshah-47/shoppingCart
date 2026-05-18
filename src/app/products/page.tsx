@@ -33,9 +33,13 @@ async function fetchProducts(params: {
 }
 
 interface ProductsPageProps {
-  searchParams?: Promise<
-    { category: string } | { q: string }
-  >;
+  searchParams?: Promise<{
+    category?: string;
+    q?: string;
+    priceMin?: string;
+    priceMax?: string;
+    aiCategory?: string;
+  }>;
 }
 
 const ProductsPage: React.FC<ProductsPageProps> = async ({
@@ -44,14 +48,20 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
   const resolvedSearchParams = await searchParams;
 
   const category =
-    resolvedSearchParams &&
-    'category' in resolvedSearchParams
+    resolvedSearchParams && resolvedSearchParams.category
       ? resolvedSearchParams.category
       : 'all';
   const query =
-    resolvedSearchParams && 'q' in resolvedSearchParams
+    resolvedSearchParams && resolvedSearchParams.q
       ? resolvedSearchParams.q
       : null;
+  const priceMin = resolvedSearchParams?.priceMin
+    ? parseFloat(resolvedSearchParams.priceMin)
+    : undefined;
+  const priceMax = resolvedSearchParams?.priceMax
+    ? parseFloat(resolvedSearchParams.priceMax)
+    : undefined;
+  const aiCategory = resolvedSearchParams?.aiCategory || undefined;
   const skip = 0;
   const limit = 10;
 
@@ -59,7 +69,7 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
 
   // 2. Prefetch the initial data into it
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['products', query, category, limit],
+    queryKey: ['products', query, category, limit, priceMin, priceMax, aiCategory],
     queryFn: async ({ pageParam = 0 }) => {
       // Only send limit/skip if there is no query
       let response;
@@ -68,6 +78,9 @@ const ProductsPage: React.FC<ProductsPageProps> = async ({
           query,
           limit,
           skip: pageParam,
+          priceMin,
+          priceMax,
+          aiCategory,
         });
       } else {
         response = await getProducts({

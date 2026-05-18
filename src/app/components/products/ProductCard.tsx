@@ -13,8 +13,14 @@ interface ProductCardProps<TData> {
   priority?: boolean;
 }
 
-// Hoist dynamic import so it isn't recreated on every render
-const Rating = dynamic(() => import('@mui/material/Rating'));
+// MUI Rating uses Emotion; SSR output (style tag) doesn't match client (span) and causes hydration errors.
+// Load only on client to avoid mismatch.
+const Rating = dynamic(() => import('@mui/material/Rating'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-row gap-1 sm:hidden h-[1.5rem]" aria-hidden />
+  ),
+});
 
 const ProductCardComponent: React.FC<ProductCardProps<any>> = ({
   data,
@@ -38,7 +44,7 @@ const ProductCardComponent: React.FC<ProductCardProps<any>> = ({
      border-slate-200
      bg-slate-50 rounded-sm p-1 transition 
      hover:scale-105 text-center text-sm"
-      // onClick={() => router.push(`products/${data.id}`)}
+    // onClick={() => router.push(`products/${data.id}`)}
     >
       <div className="flex flex-col items-center w-full gap-1">
         <div className="aspect-square overflow-hidden relative w-full">
@@ -48,7 +54,7 @@ const ProductCardComponent: React.FC<ProductCardProps<any>> = ({
               typeof data?.images?.[0]?.image === 'string'
                 ? data?.images?.[0]?.image
                 : typeof data?.images?.[0]?.image?.image ===
-                    'string'
+                  'string'
                   ? data?.images?.[0]?.image?.image
                   : null
             }

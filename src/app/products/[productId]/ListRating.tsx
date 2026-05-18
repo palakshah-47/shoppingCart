@@ -9,6 +9,7 @@ import {
 import moment from 'moment';
 import Rating from '@mui/material/Rating';
 import Avatar from '@/app/components/ui/Avatar';
+import ReviewSummary from '@/app/components/products/ReviewSummary';
 
 interface ListRatingProps {
   product: Product;
@@ -38,6 +39,10 @@ const ListRating: React.FC<ListRatingProps> = ({
 
   return (
     <div>
+      <ReviewSummary
+        productId={product.id}
+        reviewCount={product.reviews.length}
+      />
       <Heading title="Product Review" />
       <div className="text-sm mt-2">
         {product?.reviews?.map((review: Review, index) => {

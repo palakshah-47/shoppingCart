@@ -2,6 +2,7 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getProducts } from '@/actions/fetchProducts';
 import InfiniteScrollTrigger from './InfiniteScrollTrigger';
 import { Product } from './products/types';
@@ -20,6 +21,15 @@ export default function ProductsList({
   query?: string;
   limit: number;
 }) {
+  const searchParams = useSearchParams();
+  const priceMin = searchParams.get('priceMin')
+    ? parseFloat(searchParams.get('priceMin')!)
+    : undefined;
+  const priceMax = searchParams.get('priceMax')
+    ? parseFloat(searchParams.get('priceMax')!)
+    : undefined;
+  const aiCategory = searchParams.get('aiCategory') || undefined;
+
   const {
     data,
     fetchNextPage,
@@ -27,11 +37,16 @@ export default function ProductsList({
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ['products', category, query, limit],
+    queryKey: ['products', query, category, limit, priceMin, priceMax, aiCategory],
     queryFn: ({ pageParam = 0 }) => {
       if (query) {
-        // For search, do not send skip or limit, just query
-        return getProducts({ query });
+        // For search, include AI filters if present
+        return getProducts({
+          query,
+          priceMin,
+          priceMax,
+          aiCategory,
+        });
       }
       if (category && category !== 'all') {
         // For specific category, do not send skip or limit

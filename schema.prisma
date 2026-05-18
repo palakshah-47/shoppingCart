@@ -105,9 +105,20 @@ model Product {
   stock       Int?
   inStock     Boolean?
   quantity   Int?
-  images      Image[] 
-  availabilityStatus String?  
+  images      Image[]
+  availabilityStatus String?
   reviews ProductReview[]
+}
+
+model ReviewSummary {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String   @unique
+  summary     String
+  sentiment   Float
+  pros        String[]
+  cons        String[]
+  reviewCount Int
+  updatedAt   DateTime @updatedAt
 }
 
 type CartProductType {

@@ -4,9 +4,11 @@ import { Poppins } from 'next/font/google';
 import NavBar from './components/nav/NavBar';
 import Footer from './components/footer/Footer';
 import { CartProvider } from '../providers/CartProvider';
+import { ChatProvider } from '../providers/ChatProvider';
 import { Toaster } from 'react-hot-toast';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { ReactQueryProvider } from './providers';
+import ChatWidget from './components/chat/ChatWidget';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -26,7 +28,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.className} text-slate=700`}>
+        className={`${poppins.className} text-slate-700`}>
         <Toaster
           toastOptions={{
             style: {
@@ -36,14 +38,16 @@ export default async function RootLayout({
           }}
         />
         <ReactQueryProvider>
-          <CartProvider>            
-            <div className="flex flex-col min-h-screen min-w-[460px] md:min-w-[760px]">
-              <PerformanceMonitor />
-              <NavBar />
-              <main>{children}</main>
-              <Footer />
-            </div>
-           
+          <CartProvider>
+            <ChatProvider>
+              <div className="flex flex-col min-h-screen min-w-[460px] md:min-w-[760px]">
+                <PerformanceMonitor />
+                <NavBar />
+                <main>{children}</main>
+                <Footer />
+              </div>
+              <ChatWidget />
+            </ChatProvider>
           </CartProvider>
         </ReactQueryProvider>
       </body>
