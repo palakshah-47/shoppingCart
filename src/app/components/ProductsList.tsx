@@ -22,13 +22,14 @@ export default function ProductsList({
   limit: number;
 }) {
   const searchParams = useSearchParams();
-  const priceMin = searchParams.get('priceMin')
-    ? parseFloat(searchParams.get('priceMin')!)
+  const priceMin = searchParams?.get('priceMin')
+    ? parseFloat(searchParams?.get('priceMin')!)
     : undefined;
-  const priceMax = searchParams.get('priceMax')
-    ? parseFloat(searchParams.get('priceMax')!)
+  const priceMax = searchParams?.get('priceMax')
+    ? parseFloat(searchParams?.get('priceMax')!)
     : undefined;
-  const aiCategory = searchParams.get('aiCategory') || undefined;
+  const aiCategory =
+    searchParams?.get('aiCategory') || undefined;
 
   const {
     data,
@@ -37,7 +38,15 @@ export default function ProductsList({
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ['products', query, category, limit, priceMin, priceMax, aiCategory],
+    queryKey: [
+      'products',
+      query,
+      category,
+      limit,
+      priceMin,
+      priceMax,
+      aiCategory,
+    ],
     queryFn: ({ pageParam = 0 }) => {
       if (query) {
         // For search, include AI filters if present
