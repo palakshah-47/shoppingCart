@@ -1,14 +1,14 @@
 import OpenAI from 'openai';
 
-if (!process.env.OPENAI_API_KEY) {
-  console.warn(
-    'Warning: OPENAI_API_KEY is not set. AI features will not work.',
-  );
-}
+const apiKey = process.env.OPENAI_API_KEY;
+const openai = apiKey ? new OpenAI({ apiKey }) : null;
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+function requireOpenAI(): OpenAI {
+  if (!openai) {
+    throw new Error('OPENAI_API_KEY is not configured.');
+  }
+  return openai;
+}
 
 export type ChatMessage = {
   role: 'user' | 'assistant';
@@ -45,9 +45,13 @@ function buildMessages(
   messages: ChatMessage[],
   systemPrompt?: string,
 ): OpenAI.Chat.ChatCompletionMessageParam[] {
-  const apiMessages: OpenAI.Chat.ChatCompletionMessageParam[] = [];
+  const apiMessages: OpenAI.Chat.ChatCompletionMessageParam[] =
+    [];
   if (systemPrompt) {
-    apiMessages.push({ role: 'system', content: systemPrompt });
+    apiMessages.push({
+      role: 'system',
+      content: systemPrompt,
+    });
   }
   for (const msg of messages) {
     apiMessages.push({
@@ -58,7 +62,9 @@ function buildMessages(
   return apiMessages;
 }
 
-function convertToolsToOpenAI(tools: ToolDefinition[]): OpenAI.Chat.ChatCompletionTool[] {
+function convertToolsToOpenAI(
+  tools: ToolDefinition[],
+): OpenAI.Chat.ChatCompletionTool[] {
   return tools.map((tool) => ({
     type: 'function' as const,
     function: {
@@ -83,14 +89,17 @@ export async function getAICompletion(
   const apiMessages = buildMessages(messages, systemPrompt);
 
   try {
-    const response = await openai.chat.completions.create({
-      model,
-      messages: apiMessages,
-      max_tokens: maxTokens,
-      temperature,
-    });
+    const response =
+      await requireOpenAI().chat.completions.create({
+        model,
+        messages: apiMessages,
+        max_tokens: maxTokens,
+        temperature,
+      });
 
-    return response.choices[0]?.message?.content?.trim() ?? '';
+    return (
+      response.choices[0]?.message?.content?.trim() ?? ''
+    );
   } catch (error) {
     // Handle OpenAI API errors
     if (error instanceof OpenAI.APIError) {
@@ -99,21 +108,31 @@ export async function getAICompletion(
         message: error.message,
         error: error.error,
       });
-      
+
       // Check for insufficient funds / billing errors
+      if (
+        error.status === 402 ||
+        error.message?.includes('insufficient_quota')
+      ) {
+        throw new Error(
+          'Insufficient funds. Please check your OpenAI account balance.',
+        );
+      }
       if (error.status === 429) {
-        throw new Error('Rate limit exceeded. Please try again later.');
+        throw new Error(
+          'Rate limit exceeded. Please try again later.',
+        );
       }
+
       if (error.status === 401 || error.status === 403) {
-        throw new Error('Authentication failed. Check your OpenAI API key.');
+        throw new Error(
+          'Authentication failed. Check your OpenAI API key.',
+        );
       }
-      if (error.status === 402 || error.message?.includes('insufficient_quota')) {
-        throw new Error('Insufficient funds. Please check your OpenAI account balance.');
-      }
-      
+
       throw new Error(`OpenAI API error: ${error.message}`);
     }
-    
+
     throw error;
   }
 }
@@ -137,19 +156,21 @@ export async function getAICompletionWithTools(
   const apiMessages = buildMessages(messages, systemPrompt);
   const openaiTools = convertToolsToOpenAI(tools);
 
-  const response = await openai.chat.completions.create({
-    model,
-    messages: apiMessages,
-    tools: openaiTools,
-    max_tokens: maxTokens,
-    temperature,
-  });
+  const response =
+    await requireOpenAI().chat.completions.create({
+      model,
+      messages: apiMessages,
+      tools: openaiTools,
+      max_tokens: maxTokens,
+      temperature,
+    });
 
   const choice = response.choices[0];
   const message = choice?.message;
   const toolCalls = message?.tool_calls;
 
-  let content: string | null = message?.content?.trim() ?? null;
+  let content: string | null =
+    message?.content?.trim() ?? null;
   let toolUse: ToolUseBlock | null = null;
   let stopReason = choice?.finish_reason ?? 'stop';
 
@@ -192,12 +213,13 @@ export async function streamAICompletion(
 
   const apiMessages = buildMessages(messages, systemPrompt);
 
-  const stream = await openai.chat.completions.create({
-    model,
-    messages: apiMessages,
-    max_tokens: maxTokens,
-    stream: true,
-  });
+  const stream =
+    await requireOpenAI().chat.completions.create({
+      model,
+      messages: apiMessages,
+      max_tokens: maxTokens,
+      stream: true,
+    });
 
   let fullText = '';
   for await (const chunk of stream) {

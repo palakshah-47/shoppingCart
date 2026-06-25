@@ -10,7 +10,8 @@ import { products } from '../../../../const/products';
 
 export async function GET(request: NextRequest) {
   try {
-    const productId = request.nextUrl.searchParams.get('productId');
+    const productId =
+      request.nextUrl.searchParams.get('productId');
 
     if (!productId) {
       return NextResponse.json(
@@ -20,14 +21,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Check for cached summary
-    const cachedSummary = await prisma.reviewSummary.findUnique({
-      where: { productId },
-    });
+    const cachedSummary =
+      await prisma.reviewSummary.findUnique({
+        where: { productId },
+      });
 
     if (cachedSummary) {
       // Check if summary is still valid (less than 24 hours old)
       const hoursSinceUpdate =
-        (Date.now() - cachedSummary.updatedAt.getTime()) / (1000 * 60 * 60);
+        (Date.now() - cachedSummary.updatedAt.getTime()) /
+        (1000 * 60 * 60);
 
       if (hoursSinceUpdate < 24) {
         return NextResponse.json(cachedSummary);
@@ -37,11 +40,16 @@ export async function GET(request: NextRequest) {
     // Need to generate new summary - return cached if exists, trigger generation
     if (cachedSummary) {
       // Return stale data but trigger background regeneration
-      generateAndCacheSummary(productId).catch(console.error);
+      generateAndCacheSummary(productId).catch(
+        console.error,
+      );
       return NextResponse.json(cachedSummary);
     }
 
-    return NextResponse.json({ error: 'No summary available yet' }, { status: 404 });
+    return NextResponse.json(
+      { error: 'No summary available yet' },
+      { status: 404 },
+    );
   } catch (error) {
     console.error('Error fetching review summary:', error);
     return NextResponse.json(
@@ -70,12 +78,16 @@ export async function POST(request: NextRequest) {
       });
     } catch (error) {
       if (error instanceof RateLimitError) {
-        return NextResponse.json({ error: error.message }, { status: 429 });
+        return NextResponse.json(
+          { error: error.message },
+          { status: 429 },
+        );
       }
       throw error;
     }
 
-    const summary = await generateAndCacheSummary(productId);
+    const summary =
+      await generateAndCacheSummary(productId);
 
     if (!summary) {
       return NextResponse.json(
@@ -86,7 +98,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(summary);
   } catch (error) {
-    console.error('Error generating review summary:', error);
+    console.error(
+      'Error generating review summary:',
+      error,
+    );
     return NextResponse.json(
       { error: 'Failed to generate review summary' },
       { status: 500 },
@@ -109,9 +124,27 @@ async function generateAndCacheSummary(productId: string) {
   const embeddedReviews = product?.reviews || [];
 
   // Merge both sources: DB reviews (user-submitted) + embedded reviews (seed/imported)
-  const dbReviewItems = dbReviews.map((r) => ({ rating: r.rating, comment: r.comment }));
-  const embeddedReviewItems = embeddedReviews.map((r) => ({ rating: r.rating, comment: r.comment }));
-  const reviews = [...dbReviewItems, ...embeddedReviewItems];
+  const merged = [
+    ...dbReviews.map((r) => ({
+      id: r.id,
+      rating: r.rating,
+      comment: r.comment,
+    })),
+    ...embeddedReviews.map((r) => ({
+      id: r.id,
+      rating: r.rating,
+      comment: r.comment,
+    })),
+  ];
+  const reviews = Array.from(
+    new Map(
+      merged.map((r) => [
+        r.id ??
+          `${r.rating}:${(r.comment ?? '').trim().toLowerCase()}`,
+        { rating: r.rating, comment: r.comment },
+      ]),
+    ).values(),
+  );
   // Need at least 3 reviews to generate a meaningful summary
   if (reviews.length < 3) {
     return null;
@@ -124,7 +157,10 @@ async function generateAndCacheSummary(productId: string) {
     'Product';
 
   // Generate summary using AI
-  const userPrompt = REVIEW_SUMMARY_USER_PROMPT(productTitle, reviews);
+  const userPrompt = REVIEW_SUMMARY_USER_PROMPT(
+    productTitle,
+    reviews,
+  );
 
   const aiResponse = await getAICompletion(
     [{ role: 'user', content: userPrompt }],
@@ -147,9 +183,22 @@ async function generateAndCacheSummary(productId: string) {
       throw new Error('No JSON found in response');
     }
   } catch {
-    console.error('Failed to parse AI response:', aiResponse);
+    console.error(
+      'Failed to parse AI response:',
+      aiResponse,
+    );
     throw new Error('Failed to parse AI response');
   }
+
+  if (
+    typeof parsedResponse?.summary !== 'string' ||
+    typeof parsedResponse?.sentiment !== 'number' ||
+    !Array.isArray(parsedResponse?.pros) ||
+    !Array.isArray(parsedResponse?.cons)
+  ) {
+    throw new Error('Invalid AI response schema');
+  }
+
 
   // Upsert the summary
   const summary = await prisma.reviewSummary.upsert({

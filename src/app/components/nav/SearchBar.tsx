@@ -145,7 +145,7 @@ const SearchBar = () => {
     } else {
       router.push(`/products?${searchParams.toString()}`);
     }
-
+    setInputValue('');
     if (searchInputRef.current) {
       searchInputRef.current.value = '';
     }
@@ -153,12 +153,14 @@ const SearchBar = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) {
+    const nextValue = e.target.value;
+    setInputValue(nextValue);
+
+    if (!nextValue) {
       setShowSuggestions(false);
       setAiInterpretation(null);
       return;
-    }
-    setInputValue(e.target.value);
+    }    
     setShowSuggestions(true);
   };
 
@@ -177,8 +179,8 @@ const SearchBar = () => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const searchTerm = formData.get('searchTerm') as string;
-    handleSubmit(searchTerm || inputValue);
+    const searchTerm = formData.get('searchTerm') as string ?? "";
+    handleSubmit(searchTerm);
   };
 
   useEffect(() => {

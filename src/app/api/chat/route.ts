@@ -105,7 +105,7 @@ async function executeToolCall(
       return products
         .slice(0, 5)
         .map(
-          (p: typeof products[0]) =>
+          (p: (typeof products)[0]) =>
             `- ${p.title} ($${p.price.toFixed(2)}) - ${p.category} — Visit product: [ID: ${p.id}]`,
         )
         .join('\n');
@@ -122,15 +122,18 @@ async function executeToolCall(
       // Align "in stock" logic with the product page UI.
       // Prefer explicit boolean `inStock` when present, otherwise fall back to
       // availabilityStatus and stock quantity.
-      const hasExplicitInStock = typeof p.inStock === 'boolean';
+      const hasExplicitInStock =
+        typeof p.inStock === 'boolean';
       const normalizedAvailability =
-        (p as any).availabilityStatus?.toString().toLowerCase() ?? '';
-      const stockCount = typeof p.stock === 'number' ? p.stock : null;
+        (p as any).availabilityStatus
+          ?.toString()
+          .toLowerCase() ?? '';
+      const stockCount =
+        typeof p.stock === 'number' ? p.stock : null;
 
-      const isInStock =
-        hasExplicitInStock
-          ? !!p.inStock
-          : normalizedAvailability === 'in stock' ||
+      const isInStock = hasExplicitInStock
+        ? !!p.inStock
+        : normalizedAvailability === 'in stock' ||
           (stockCount !== null && stockCount > 0);
 
       const availabilityLabel =
@@ -138,7 +141,9 @@ async function executeToolCall(
         (isInStock ? 'In Stock' : 'Out of Stock');
 
       const stockLabel =
-        stockCount !== null ? `${stockCount} unit(s) available` : 'Unknown';
+        stockCount !== null
+          ? `${stockCount} unit(s) available`
+          : 'Unknown';
 
       return `Product: ${p.title}
 Price: $${p.price.toFixed(2)}
@@ -166,7 +171,7 @@ Visit product: [ID: ${p.id}]`;
             ...products
               .slice(0, 2)
               .map(
-                (p: typeof products[0]) =>
+                (p: (typeof products)[0]) =>
                   `- ${p.title} ($${p.price.toFixed(2)}) — Visit: [ID: ${p.id}]`,
               ),
           );
@@ -192,6 +197,27 @@ export async function POST(request: NextRequest) {
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
         { error: 'Messages array is required' },
+        { status: 400 },
+      );
+    }
+    if (messages.length === 0 || messages.length > 30) {
+      return NextResponse.json(
+        { error: 'Messages must contain 1-30 items' },
+        { status: 400 },
+      );
+    }
+
+    const isValidMessage = messages.every(
+      (m) =>
+        (m?.role === 'user' || m?.role === 'assistant') &&
+        typeof m?.content === 'string' &&
+        m.content.trim().length > 0 &&
+        m.content.length <= 4000,
+    );
+
+    if (!isValidMessage) {
+      return NextResponse.json(
+        { error: 'Invalid message format' },
         { status: 400 },
       );
     }

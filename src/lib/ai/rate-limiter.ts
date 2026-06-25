@@ -4,6 +4,8 @@ type RateLimitEntry = {
 };
 
 const rateLimits = new Map<string, RateLimitEntry>();
+let callsSinceCleanup = 0;
+const CLEANUP_EVERY_N_CALLS = 200;
 
 export type RateLimitConfig = {
   maxRequests: number;
@@ -20,6 +22,13 @@ export function checkRateLimit(
   config: RateLimitConfig = defaultConfig,
 ): { allowed: boolean; remainingRequests: number; resetIn: number } {
   const now = Date.now();
+  callsSinceCleanup++;
+  if (callsSinceCleanup >= CLEANUP_EVERY_N_CALLS) {
+    callsSinceCleanup = 0;   
+    rateLimits.forEach((v, k) => {
+      if (now > v.resetTime) rateLimits.delete(k);
+    });
+  }
   const entry = rateLimits.get(key);
 
   if (!entry || now > entry.resetTime) {

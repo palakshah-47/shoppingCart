@@ -84,21 +84,27 @@ const ChatWindow: React.FC = () => {
         <div className="flex items-center gap-2">
           <MdAutoAwesome size={20} />
           <div>
-            <h3 className="font-semibold text-sm">ShopBot</h3>
-            <p className="text-xs text-slate-300">AI Shopping Assistant</p>
+            <h3 className="font-semibold text-sm">
+              ShopBot
+            </h3>
+            <p className="text-xs text-slate-300">
+              AI Shopping Assistant
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={minimizeChat}
             className="p-1 hover:bg-slate-600 rounded-full transition-colors"
-            title="Minimize chat">
+            title="Minimize chat"
+            aria-label="Minimize chat">
             <MdMinimize size={18} />
           </button>
           <button
             onClick={clearMessages}
             className="p-1 hover:bg-slate-600 rounded-full transition-colors"
-            title="Clear conversation">
+            title="Clear conversation"
+            aria-label="Clear conversation">
             <MdRefresh size={18} />
           </button>
         </div>
@@ -111,13 +117,16 @@ const ChatWindow: React.FC = () => {
             key={message.id}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.role === 'user'
-                ? 'bg-slate-700 text-white rounded-br-sm'
-                : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm'
-                }`}>
+              className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                message.role === 'user'
+                  ? 'bg-slate-700 text-white rounded-br-sm'
+                  : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm'
+              }`}>
               <p className="text-sm whitespace-pre-wrap">
                 {message.role === 'assistant' ? (
-                  <MessageContent content={message.content} />
+                  <MessageContent
+                    content={message.content}
+                  />
                 ) : (
                   message.content
                 )}
@@ -148,12 +157,16 @@ const ChatWindow: React.FC = () => {
       {/* Quick Questions - show only at start */}
       {messages.length <= 1 && (
         <div className="px-4 py-2 border-t border-gray-100 bg-white">
-          <p className="text-xs text-gray-500 mb-2">Quick questions:</p>
+          <p className="text-xs text-gray-500 mb-2">
+            Quick questions:
+          </p>
           <div className="flex flex-wrap gap-2">
             {quickQuestions.map((question) => (
               <button
                 key={question}
-                onClick={() => handleQuickQuestion(question)}
+                onClick={() =>
+                  handleQuickQuestion(question)
+                }
                 className="text-xs px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full transition-colors">
                 {question}
               </button>
@@ -163,7 +176,9 @@ const ChatWindow: React.FC = () => {
       )}
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="p-3 border-t border-gray-200 bg-white">
+      <form
+        onSubmit={handleSubmit}
+        className="p-3 border-t border-gray-200 bg-white">
         <div className="flex items-center gap-2">
           <input
             ref={inputRef}

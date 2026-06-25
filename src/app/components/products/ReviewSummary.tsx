@@ -30,12 +30,14 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
 
   useEffect(() => {
     if (reviewCount < 3) return;
+    const controller = new AbortController();
 
     const fetchSummary = async () => {
       setLoading(true);
       try {
         const response = await fetch(
           `/api/review-summary?productId=${productId}`,
+          {signal: controller.signal}
         );
         if (response.ok) {
           const data = await response.json();
@@ -45,6 +47,7 @@ const ReviewSummary: React.FC<ReviewSummaryProps> = ({
           setSummary(null);
         }
       } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
         console.error('Error fetching summary:', err);
       } finally {
         setLoading(false);

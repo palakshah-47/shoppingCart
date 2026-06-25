@@ -8,7 +8,17 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
-    const { query } = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      return NextResponse.json(
+        { error: 'Malformed JSON' },
+        { status: 400 },
+      );
+    }
+
+    const { query } = body as { query?: unknown };
 
     if (!query || typeof query !== 'string') {
       return NextResponse.json(

@@ -85,7 +85,15 @@ export interface IProductsParams {
 export const getProducts = async (
   params: IProductsParams,
 ) => {
-  const { category = '', query = '', limit, skip, priceMin, priceMax, aiCategory } = params;
+  const {
+    category = '',
+    query = '',
+    limit,
+    skip,
+    priceMin,
+    priceMax,
+    aiCategory,
+  } = params;
   console.log(
     'inside fetchProductsByCategory',
     category,
@@ -98,7 +106,8 @@ export const getProducts = async (
 
   // Use aiCategory if provided (from AI search), otherwise use regular category
   const effectiveCategory = aiCategory || category;
-  const categoryStr = effectiveCategory && categoryQuery(effectiveCategory);
+  const categoryStr =
+    effectiveCategory && categoryQuery(effectiveCategory);
   const skipVal =
     categoryStr === 'all' ? skip || 0 : undefined;
   const limitVal =
@@ -110,6 +119,12 @@ export const getProducts = async (
     categoryStr,
     searchString,
   });
+
+  const cacheKey = searchString
+    ? `products:${searchString}:${categoryStr ?? 'none'}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
+    : categoryStr && categoryStr === 'all'
+      ? `products:${categoryStr}:${limitVal}:${skipVal}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
+      : `products:${categoryStr}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`;
 
   const getCachedProducts = unstable_cache(
     async () => {
@@ -155,7 +170,7 @@ export const getProducts = async (
               $match: {
                 category: Array.isArray(categoryStr)
                   ? { $in: categoryStr }
-                  : categoryStr === 'all' || searchString
+                  : categoryStr === 'all'
                     ? { $ne: 'groceries' }
                     : categoryStr,
               },
@@ -170,9 +185,10 @@ export const getProducts = async (
         if (priceMax !== undefined && priceMax !== null) {
           priceClause.$lte = priceMax;
         }
-        const priceFilter = Object.keys(priceClause).length > 0
-          ? { $match: { price: priceClause } }
-          : null;
+        const priceFilter =
+          Object.keys(priceClause).length > 0
+            ? { $match: { price: priceClause } }
+            : null;
 
         const result = await prisma.$runCommandRaw({
           aggregate: 'Product',
@@ -216,13 +232,7 @@ export const getProducts = async (
         throw error; // keep original message & stack
       }
     },
-    [
-      searchString
-        ? `products:${searchString}`
-        : categoryStr && categoryStr === 'all'
-          ? `products:${categoryStr}:${limitVal}:${skipVal}`
-          : `products:${categoryStr}`,
-    ],
+    [cacheKey],
     {
       revalidate: 600, // Optional: Revalidate cache every 10 mins
     },
