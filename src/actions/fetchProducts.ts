@@ -120,12 +120,14 @@ export const getProducts = async (
     searchString,
   });
 
-  const cacheKey = searchString
-    ? `products:${searchString}:${categoryStr ?? 'none'}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
-    : categoryStr && categoryStr === 'all'
-      ? `products:${categoryStr}:${limitVal}:${skipVal}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
-      : `products:${categoryStr}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`;
-
+ const paginationKey =
+    categoryStr === 'all' ? `:${limitVal}:${skipVal}` : '';
+ const cacheKey = searchString
+   ? `products:${searchString}:${categoryStr ?? 'none'}${paginationKey}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
+   : categoryStr && categoryStr === 'all'
+     ? `products:${categoryStr}:${limitVal}:${skipVal}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
+     : `products:${categoryStr}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`;
+  
   const getCachedProducts = unstable_cache(
     async () => {
       try {
@@ -179,12 +181,20 @@ export const getProducts = async (
 
         // 💰 Price filtering (for AI search)
         const priceClause: Record<string, unknown> = {};
-        if (priceMin !== undefined && priceMin !== null) {
-          priceClause.$gte = priceMin;
-        }
-        if (priceMax !== undefined && priceMax !== null) {
-          priceClause.$lte = priceMax;
-        }
+        const validPriceMin =
+          typeof priceMin === 'number' && Number.isFinite(priceMin)
+            ? priceMin
+            : undefined;
+        const validPriceMax =
+          typeof priceMax === 'number' && Number.isFinite(priceMax)
+            ? priceMax
+            : undefined;
+        if (validPriceMin !== undefined) {
+          priceClause.$gte = validPriceMin;
+         }
+        if (validPriceMax !== undefined) {
+          priceClause.$lte = validPriceMax;
+         }
         const priceFilter =
           Object.keys(priceClause).length > 0
             ? { $match: { price: priceClause } }
