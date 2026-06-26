@@ -77,12 +77,23 @@ export interface IProductsParams {
   query?: string;
   limit?: number;
   skip?: number;
+  priceMin?: number;
+  priceMax?: number;
+  aiCategory?: string;
 }
 
 export const getProducts = async (
   params: IProductsParams,
 ) => {
-  const { category = '', query = '', limit, skip } = params;
+  const {
+    category = '',
+    query = '',
+    limit,
+    skip,
+    priceMin,
+    priceMax,
+    aiCategory,
+  } = params;
   console.log(
     'inside fetchProductsByCategory',
     category,
@@ -93,7 +104,10 @@ export const getProducts = async (
     searchString = '';
   }
 
-  const categoryStr = category && categoryQuery(category);
+  // Use aiCategory if provided (from AI search), otherwise use regular category
+  const effectiveCategory = aiCategory || category;
+  const categoryStr =
+    effectiveCategory && categoryQuery(effectiveCategory);
   const skipVal =
     categoryStr === 'all' ? skip || 0 : undefined;
   const limitVal =
@@ -106,6 +120,14 @@ export const getProducts = async (
     searchString,
   });
 
+ const paginationKey =
+    categoryStr === 'all' ? `:${limitVal}:${skipVal}` : '';
+ const cacheKey = searchString
+   ? `products:${searchString}:${categoryStr ?? 'none'}${paginationKey}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
+   : categoryStr && categoryStr === 'all'
+     ? `products:${categoryStr}:${limitVal}:${skipVal}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`
+     : `products:${categoryStr}:${priceMin ?? 'none'}:${priceMax ?? 'none'}`;
+  
   const getCachedProducts = unstable_cache(
     async () => {
       try {
@@ -150,12 +172,33 @@ export const getProducts = async (
               $match: {
                 category: Array.isArray(categoryStr)
                   ? { $in: categoryStr }
-                  : categoryStr === 'all' || searchString
+                  : categoryStr === 'all'
                     ? { $ne: 'groceries' }
                     : categoryStr,
               },
             }
           : null;
+
+        // 💰 Price filtering (for AI search)
+        const priceClause: Record<string, unknown> = {};
+        const validPriceMin =
+          typeof priceMin === 'number' && Number.isFinite(priceMin)
+            ? priceMin
+            : undefined;
+        const validPriceMax =
+          typeof priceMax === 'number' && Number.isFinite(priceMax)
+            ? priceMax
+            : undefined;
+        if (validPriceMin !== undefined) {
+          priceClause.$gte = validPriceMin;
+         }
+        if (validPriceMax !== undefined) {
+          priceClause.$lte = validPriceMax;
+         }
+        const priceFilter =
+          Object.keys(priceClause).length > 0
+            ? { $match: { price: priceClause } }
+            : null;
 
         const result = await prisma.$runCommandRaw({
           aggregate: 'Product',
@@ -163,6 +206,7 @@ export const getProducts = async (
           pipeline: [
             ...matchClauses,
             ...(categoryClause ? [categoryClause] : []),
+            ...(priceFilter ? [priceFilter] : []),
             {
               $match: {
                 category: { $ne: 'groceries' },
@@ -198,13 +242,7 @@ export const getProducts = async (
         throw error; // keep original message & stack
       }
     },
-    [
-      searchString
-        ? `products:${searchString}`
-        : categoryStr && categoryStr === 'all'
-          ? `products:${categoryStr}:${limitVal}:${skipVal}`
-          : `products:${categoryStr}`,
-    ],
+    [cacheKey],
     {
       revalidate: 600, // Optional: Revalidate cache every 10 mins
     },

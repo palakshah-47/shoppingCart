@@ -14,7 +14,8 @@ import ProductImage from '@/app/components/products/ProductImage';
 import isStringArray from '@/app/utils/isStringArray';
 import { attachProductImages } from '@/app/utils/productHelper';
 import { useCart } from '@/hooks/useCart';
-import { MdCheckCircle, MdArrowBack } from 'react-icons/md';
+import { useChat } from '@/providers/ChatProvider';
+import { MdCheckCircle, MdArrowBack, MdChat } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
 import { FullProduct } from '@/app/components/products/types';
 import { Image } from '@/app/components/products/types';
@@ -51,9 +52,25 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
 }) => {
   const { handleAddProductToCart, cartProducts } =
     useCart();
+  const { openChat, sendMessage } = useChat();
   const [isProductInCart, setIsProductInCart] =
     useState(false);
   const router = useRouter();
+
+  const handleAskAboutProduct = () => {
+    openChat();
+    const cartItems = cartProducts?.map((p) => ({
+      id: p.id,
+      name: p.name,
+      category: p.category,
+      price: p.price,
+      quantity: p.quantity,
+    }));
+    sendMessage(
+      `Tell me more about the ${product.title}. Is it a good choice? What are its key features?`,
+      cartItems || [],
+    );
+  };
   if (isStringArray(product.images)) {
     product = {
       ...product,
@@ -275,12 +292,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
             ) : null}
           </>
         )}
-        <button
-          onClick={router.back}
-          className="text-slate-500 flex items-center gap-1 mt-2">
-          <MdArrowBack />
-          <span>Continue Shopping</span>
-        </button>
+        <div className="flex items-center gap-4 mt-2">
+          <button
+            onClick={router.back}
+            className="text-slate-500 flex items-center gap-1">
+            <MdArrowBack />
+            <span>Continue Shopping</span>
+          </button>
+          <button
+            onClick={handleAskAboutProduct}
+            className="text-purple-600 flex items-center gap-1 hover:text-purple-700">
+            <MdChat />
+            <span>Ask about this product</span>
+          </button>
+        </div>
       </div>
     </div>
   );
